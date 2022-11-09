@@ -1,4 +1,4 @@
-name: HS-deploy-infra
+name: deploy-infra
 
 on:
   workflow_dispatch:
