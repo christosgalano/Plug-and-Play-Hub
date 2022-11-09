@@ -55,7 +55,7 @@ resource keyvault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     enabledForTemplateDeployment: enabled_for_template_deployment
     enablePurgeProtection: purge_protection_enabled ? true : null
 
-    enableSoftDelete: soft_delete_enabled ? true : null
+    enableSoftDelete: soft_delete_enabled
 
     networkAcls: {
       bypass: enabled_for_template_deployment ? 'AzureServices' : 'None'
