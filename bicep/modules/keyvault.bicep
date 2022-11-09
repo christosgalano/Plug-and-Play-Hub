@@ -53,9 +53,9 @@ resource keyvault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     tenantId: subscription().tenantId
 
     enabledForTemplateDeployment: enabled_for_template_deployment
-    enablePurgeProtection: purge_protection_enabled
+    enablePurgeProtection: purge_protection_enabled ? true : null
 
-    enableSoftDelete: soft_delete_enabled
+    enableSoftDelete: soft_delete_enabled ? true : null
 
     networkAcls: {
       bypass: enabled_for_template_deployment ? 'AzureServices' : 'None'
