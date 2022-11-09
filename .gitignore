@@ -1,0 +1,7 @@
+# Directories
+**/.vscode/*
+**/docs/dev/*
+
+# Files
+**/bicepconfig.json
+.markdownlint.json
