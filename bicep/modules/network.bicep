@@ -124,7 +124,13 @@ resource vnet_diagnostics_settings 'Microsoft.Insights/diagnosticSettings@2021-0
     workspaceId: log_workspace_id
     logs: [
       {
-        category: 'allLogs'
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
         enabled: true
       }
     ]
