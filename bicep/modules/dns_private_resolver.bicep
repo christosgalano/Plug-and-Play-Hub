@@ -91,7 +91,7 @@ resource resolver_vnet_link 'Microsoft.Network/dnsForwardingRulesets/virtualNetw
   }
 }
 
-resource resovler_diagnostic_settings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (diagnostics_settings_enabled) {
+resource resolver_diagnostic_settings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (diagnostics_settings_enabled) {
   name: '${name}-ds'
   scope: resolver
   properties: {
