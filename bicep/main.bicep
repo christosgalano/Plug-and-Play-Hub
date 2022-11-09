@@ -64,26 +64,26 @@ module network 'modules/network.bicep' = {
   params: {
     vnet_name: 'vnet-${project_id}'
     vnet_location: location
-    vnet_address_space: [ '10.0.0.0/22' ]
+    vnet_address_space: [ '10.1.0.0/22' ]
 
     snet_bastion_name: 'AzureBastionSubnet'
-    snet_bastion_address_prefix: '10.0.2.0/26'
+    snet_bastion_address_prefix: '10.1.2.0/26'
     bastion_subnet_nsg_id: nsg_bastion_subnet.outputs.nsg_id
 
     snet_firewall_name: 'AzureFirewallSubnet'
-    snet_firewall_address_prefix: '10.0.2.64/26'
+    snet_firewall_address_prefix: '10.1.2.64/26'
 
     snet_gateway_name: 'GatewaySubnet'
-    snet_gateway_address_prefix: '10.0.2.128/26'
+    snet_gateway_address_prefix: '10.1.2.128/26'
 
     snet_inbound_endpoint_name: 'snet-inbound-${project_id}'
-    snet_inbound_endpoint_address_prefix: '10.0.0.0/24'
+    snet_inbound_endpoint_address_prefix: '10.1.0.0/24'
 
     snet_outbound_endpoint_name: 'snet-outbound-${project_id}'
-    snet_outbound_endpoint_address_prefix: '10.0.1.0/24'
+    snet_outbound_endpoint_address_prefix: '10.1.1.0/24'
 
     snet_shared_name: 'snet-shared-${project_id}'
-    snet_shared_address_prefix: '10.0.2.192/26'
+    snet_shared_address_prefix: '10.1.2.192/26'
 
     diagnostics_settings_enabled: true
     log_workspace_id: log_workspace.outputs.log_workspace_id
@@ -218,9 +218,6 @@ module dns_private_resolver 'modules/dns_private_resolver.bicep' = {
     outbound_snet_id: network.outputs.snet_outbound_id
 
     forwarding_ruleset_name: 'forwarding-ruleset-01'
-
-    diagnostics_settings_enabled: true
-    log_workspace_id: log_workspace.outputs.log_workspace_id
   }
 }
 
@@ -228,7 +225,7 @@ module keyvault 'modules/keyvault.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'keyvault-deployment'
   params: {
-    name: 'kv-${project_id}'
+    name: 'kv-${project_id}-cg'
     location: location
     sku_name: 'standard'
 

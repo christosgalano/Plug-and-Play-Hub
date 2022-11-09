@@ -24,12 +24,6 @@ param outbound_endpoint_name string
 @description('Name of the forwarding ruleset')
 param forwarding_ruleset_name string
 
-@description('ID of the workspace to be used for the Resolver diagnostic settings')
-param log_workspace_id string
-
-@description('Enable diagnostic settings for this resource')
-param diagnostics_settings_enabled bool
-
 // Resources
 
 resource resolver 'Microsoft.Network/dnsResolvers@2022-07-01' = {
@@ -88,26 +82,6 @@ resource resolver_vnet_link 'Microsoft.Network/dnsForwardingRulesets/virtualNetw
     virtualNetwork: {
       id: vnet_id
     }
-  }
-}
-
-resource resolver_diagnostic_settings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (diagnostics_settings_enabled) {
-  name: '${name}-ds'
-  scope: resolver
-  properties: {
-    workspaceId: log_workspace_id
-    logs: [
-      {
-        categoryGroup: 'allLogs'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-      }
-    ]
   }
 }
 
