@@ -22,9 +22,6 @@ param sku string
 @description('The workspace data retention in days')
 param retention_days int
 
-@description('The workspace daily quota for ingestion')
-param daily_quota_gb int
-
 @description('Enable diagnostic settings for this resource')
 param diagnostics_settings_enabled bool
 
@@ -38,9 +35,6 @@ resource log_workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
       name: sku
     }
     retentionInDays: retention_days
-    workspaceCapping: {
-      dailyQuotaGb: daily_quota_gb
-    }
   }
 }
 

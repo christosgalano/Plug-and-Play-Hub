@@ -9,8 +9,11 @@ param vnet_location string
 @description('Address space of the virtual network')
 param vnet_address_space array
 
+@allowed([
+  'AzureBastionSubnet'
+])
 @description('Name of the subnet where the Bastion will reside')
-param snet_bastion_name string = 'AzureBastionSubnet'
+param snet_bastion_name string
 
 @description('Address space of the subnet where the Bastion will reside')
 param snet_bastion_address_prefix string
@@ -18,23 +21,41 @@ param snet_bastion_address_prefix string
 @description('The ID of the NSG applied to the Bastion subnet')
 param bastion_subnet_nsg_id string
 
+@allowed([
+  'AzureFirewallSubnet'
+])
 @description('Name of the subnet where the Firewall will reside')
-param snet_firewall_name string = 'AzureFirewallSubnet'
+param snet_firewall_name string
 
 @description('Address space of the subnet where the Firewall will reside')
 param snet_firewall_address_prefix string
 
+@allowed([
+  'GatewaySubnet'
+])
 @description('Name of the subnet where the Virtual Network Gateway will reside')
-param snet_gateway_name string = 'GatewaySubnet'
+param snet_gateway_name string
 
 @description('Address space of the subnet where the Virtual Network Gateway will reside')
 param snet_gateway_address_prefix string
 
-@description('Name of the subnet where the private endpoints will reside')
-param snet_shared_svc_name string
+@description('Name of the inbound endpoint subnet')
+param snet_inbound_endpoint_name string
 
-@description('Address space of the subnet where the private endpoints will reside')
-param snet_shared_svc_address_prefix string
+@description('Address space of the inbound endpoint subnet')
+param snet_inbound_endpoint_address_prefix string
+
+@description('Name of the outbound endpoint subnet')
+param snet_outbound_endpoint_name string
+
+@description('Address space of the outbound endpoint subnet')
+param snet_outbound_endpoint_address_prefix string
+
+@description('Name of the subnet where the shared services will reside')
+param snet_shared_name string
+
+@description('Address space of the subnet where the shared services will reside')
+param snet_shared_address_prefix string
 
 @description('The ID of the workspace to be used for the NSG diagnostic settings')
 param log_workspace_id string
@@ -74,9 +95,21 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-01-01' = {
         }
       }
       {
-        name: snet_shared_svc_name
+        name: snet_inbound_endpoint_name
         properties: {
-          addressPrefix: snet_shared_svc_address_prefix
+          addressPrefix: snet_inbound_endpoint_address_prefix
+        }
+      }
+      {
+        name: snet_outbound_endpoint_name
+        properties: {
+          addressPrefix: snet_outbound_endpoint_address_prefix
+        }
+      }
+      {
+        name: snet_shared_name
+        properties: {
+          addressPrefix: snet_shared_address_prefix
           privateEndpointNetworkPolicies: 'Disabled'
         }
       }
@@ -104,4 +137,6 @@ output vnet_id string = vnet.id
 output snet_bastion_id string = vnet.properties.subnets[0].id
 output snet_firewall_id string = vnet.properties.subnets[1].id
 output snet_gateway_id string = vnet.properties.subnets[2].id
-output snet_shared_svc_id string = vnet.properties.subnets[3].id
+output snet_inbound_id string = vnet.properties.subnets[3].id
+output snet_outbound_id string = vnet.properties.subnets[4].id
+output snet_shared_id string = vnet.properties.subnets[5].id

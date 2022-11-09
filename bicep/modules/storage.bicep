@@ -121,7 +121,7 @@ resource blob_private_dns_zone 'Microsoft.Network/privateDnsZones@2020-06-01' = 
 
 resource private_dns_zone_vnet_link 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: blob_private_dns_zone
-  name: 'private-dns-vnet-link-${name}'
+  name: 'private-dns-zone-vnet-link'
   location: 'global'
   properties: {
     registrationEnabled: false
@@ -154,7 +154,7 @@ resource ple_blob 'Microsoft.Network/privateEndpoints@2022-01-01' = {
 
 resource blob_private_dns_zone_group 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
   parent: ple_blob
-  name: 'st-blob-PrivateDnsZoneGroup'
+  name: 'st-blob-private-dns-zone-group'
   properties: {
     privateDnsZoneConfigs: [
       {

@@ -6,12 +6,12 @@ param name string
 @description('Location of the Firewall')
 param location string
 
-@allowed([
-  'AZFW_Hub'
-  'AZFW_VNet'
-])
-@description('SKU name of the Firewall')
-param sku_name string
+// @allowed([
+//   'AZFW_Hub'
+//   'AZFW_VNet'
+// ])
+// @description('SKU name of the Firewall')
+// param sku_name string
 
 @allowed([
   'Basic'
@@ -22,7 +22,7 @@ param sku_name string
 param sku_tier string
 
 @description('A list of availability zones denoting the IP allocated for the resource needs to come from')
-param zones array = []
+param availability_zones array
 
 @description('The ID of the subnet the Firewall will be deployed into')
 param snet_id string
@@ -41,10 +41,9 @@ param diagnostics_settings_enabled bool
 resource firewall 'Microsoft.Network/azureFirewalls@2022-05-01' = {
   name: name
   location: location
-  zones: zones
+  zones: ((length(availability_zones) == 0) ? json('null') : availability_zones)
   properties: {
     sku: {
-      name: sku_name
       tier: sku_tier
     }
     ipConfigurations: [

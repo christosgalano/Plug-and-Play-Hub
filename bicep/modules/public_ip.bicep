@@ -21,7 +21,7 @@ param sku_name string
 param allocation_method string
 
 @description('A list of availability zones denoting the IP allocated for the resource needs to come from')
-param zones array = []
+param availability_zones array
 
 @description('The ID of the workspace to be used for the public ip diagnostic settings')
 param log_workspace_id string
@@ -40,7 +40,7 @@ resource pip 'Microsoft.Network/publicIPAddresses@2021-03-01' = {
   properties: {
     publicIPAllocationMethod: allocation_method
   }
-  zones: zones
+  zones: ((length(availability_zones) == 0) ? json('null') : availability_zones)
 }
 
 resource pip_diagnostics_settings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (diagnostics_settings_enabled) {
@@ -65,4 +65,5 @@ resource pip_diagnostics_settings 'Microsoft.Insights/diagnosticSettings@2021-05
 
 // Outputs
 
+output pip_id string = pip.id
 output ip_address string = pip.properties.ipAddress

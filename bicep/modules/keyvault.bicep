@@ -75,7 +75,7 @@ resource private_dns_zone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 
 resource private_dns_zone_vnet_link 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: private_dns_zone
-  name: 'private-dns-vnet-link-${name}'
+  name: 'private-dns-zone-vnet-link'
   location: 'global'
   properties: {
     registrationEnabled: false
@@ -108,7 +108,7 @@ resource ple_kv 'Microsoft.Network/privateEndpoints@2022-01-01' = {
 
 resource private_dns_zone_group 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
   parent: ple_kv
-  name: 'vault-PrivateDnsZoneGroup'
+  name: 'vault-private-dns-zone-group'
   properties: {
     privateDnsZoneConfigs: [
       {
