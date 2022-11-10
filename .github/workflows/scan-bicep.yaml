@@ -1,0 +1,39 @@
+name: scan-bicep
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: Scan with Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: ${{ github.workspace }}/bicep
+          framework: bicep
+          soft_fail: true
+          output_format: sarif
+          output_file_path: ${{ github.workspace }}/reports/results.sarif
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "christosgalano"
+          git config --global user.email "xrholy11.gmail.com"
+
+          git add -A
+          git commit -m "Update reports"
+          git push
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: scan-report
+          path: ${{ github.workspace }}/reports/results.sarif
+          retention-days: 1
