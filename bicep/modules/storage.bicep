@@ -52,6 +52,9 @@ param allow_cross_tenant_replication bool
 @description('ID of the virtual network to which the private dns zone will be linked')
 param vnet_id string
 
+@description('Name of the virtual network to which the private dns zone will be linked')
+param vnet_name string
+
 @description('Name of the storage account blob service private endpoint')
 param ple_blob_name string
 
@@ -121,7 +124,7 @@ resource blob_private_dns_zone 'Microsoft.Network/privateDnsZones@2020-06-01' = 
 
 resource private_dns_zone_vnet_link 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: blob_private_dns_zone
-  name: 'private-dns-zone-vnet-link'
+  name: 'vnet-${vnet_name}-link'
   location: 'global'
   properties: {
     registrationEnabled: false

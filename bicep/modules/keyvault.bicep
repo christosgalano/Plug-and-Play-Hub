@@ -27,6 +27,9 @@ param soft_delete_enabled bool
 @description('ID of the virtual network to which the private dns zone will be linked')
 param vnet_id string
 
+@description('Name of the virtual network to which the private dns zone will be linked')
+param vnet_name string
+
 @description('Name of the Key Vault private endpoint')
 param ple_name string
 
@@ -75,7 +78,7 @@ resource private_dns_zone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 
 resource private_dns_zone_vnet_link 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: private_dns_zone
-  name: 'private-dns-zone-vnet-link'
+  name: 'vnet-${vnet_name}-link'
   location: 'global'
   properties: {
     registrationEnabled: false

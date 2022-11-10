@@ -6,8 +6,11 @@ param name string
 @description('Location of the resolver')
 param location string
 
-@description('ID of the vnet')
+@description('ID of the virtual network')
 param vnet_id string
+
+@description('Name of the virtual network')
+param vnet_name string
 
 @description('ID of the inbound endpoint subnet')
 param inbound_snet_id string
@@ -77,7 +80,7 @@ resource forwarding_ruleset 'Microsoft.Network/dnsForwardingRulesets@2022-07-01'
 
 resource resolver_vnet_link 'Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks@2022-07-01' = {
   parent: forwarding_ruleset
-  name: 'dns-private-resolver-vnet-link'
+  name: 'vnet-${vnet_name}-link'
   properties: {
     virtualNetwork: {
       id: vnet_id
