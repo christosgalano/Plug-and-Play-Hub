@@ -140,6 +140,7 @@ resource vnet_diagnostics_settings 'Microsoft.Insights/diagnosticSettings@2021-0
 // Outputs
 
 output vnet_id string = vnet.id
+output vnet_name string = vnet.name
 output snet_bastion_id string = vnet.properties.subnets[0].id
 output snet_firewall_id string = vnet.properties.subnets[1].id
 output snet_gateway_id string = vnet.properties.subnets[2].id

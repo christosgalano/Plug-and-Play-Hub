@@ -211,8 +211,6 @@ module dns_private_resolver 'modules/dns_private_resolver.bicep' = {
     name: 'dpr-${project_id}'
     location: location
 
-    vnet_id: network.outputs.vnet_id
-
     inbound_endpoint_name: 'inbound-endpoint-01'
     inbound_snet_id: network.outputs.snet_inbound_id
 
@@ -220,6 +218,9 @@ module dns_private_resolver 'modules/dns_private_resolver.bicep' = {
     outbound_snet_id: network.outputs.snet_outbound_id
 
     forwarding_ruleset_name: 'forwarding-ruleset-01'
+
+    vnet_id: network.outputs.vnet_id
+    vnet_name: network.outputs.vnet_name
   }
   dependsOn: [
     vpn_gateway
@@ -234,14 +235,16 @@ module keyvault 'modules/keyvault.bicep' = {
     location: location
     sku_name: 'standard'
 
-    ple_name: 'ple-kv-${project_id}'
-    ple_location: location
-    ple_subnet_id: network.outputs.snet_shared_id
-    vnet_id: network.outputs.vnet_id
-
     soft_delete_enabled: false
     purge_protection_enabled: false
     enabled_for_template_deployment: false
+
+    ple_name: 'ple-kv-${project_id}'
+    ple_location: location
+    ple_subnet_id: network.outputs.snet_shared_id
+
+    vnet_id: network.outputs.vnet_id
+    vnet_name: network.outputs.vnet_name
   }
 }
 
@@ -264,6 +267,8 @@ module storage 'modules/storage.bicep' = {
     ple_blob_name: 'ple-blob-${project_id}'
     ple_blob_location: location
     ple_subnet_id: network.outputs.snet_shared_id
+
     vnet_id: network.outputs.vnet_id
+    vnet_name: network.outputs.vnet_name
   }
 }
