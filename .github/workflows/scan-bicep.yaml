@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  scan-and-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,10 +21,10 @@ jobs:
           framework: bicep
           soft_fail: true
           output_format: sarif
-          output_file_path: reports/results.sarif
+          output_file_path: results.sarif
 
       - uses: actions/upload-artifact@v3
         with:
           name: scan-report
-          path: reports/results.sarif
+          path: results.sarif
           retention-days: 1
