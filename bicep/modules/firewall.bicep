@@ -21,6 +21,14 @@ param location string
 @description('SKU name of the Firewall')
 param sku_tier string
 
+@allowed([
+  'Off'
+  'Deny'
+  'Alert'
+])
+@description('The operation mode for Threat Intelligence')
+param threat_intel_mode string
+
 @description('A list of availability zones denoting the IP allocated for the resource needs to come from')
 param availability_zones array
 
@@ -46,6 +54,7 @@ resource firewall 'Microsoft.Network/azureFirewalls@2022-05-01' = {
     sku: {
       tier: sku_tier
     }
+    threatIntelMode: threat_intel_mode
     ipConfigurations: [
       {
         name: 'firewall-ip-configuration'

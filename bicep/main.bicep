@@ -152,6 +152,8 @@ module firewall 'modules/firewall.bicep' = {
     sku_tier: 'Premium'
     availability_zones: availability_zones
 
+    threat_intel_mode: 'Alert'
+
     pip_id: firewall_pip.outputs.pip_id
     snet_id: network.outputs.snet_firewall_id
 
