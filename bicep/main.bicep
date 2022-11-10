@@ -219,6 +219,9 @@ module dns_private_resolver 'modules/dns_private_resolver.bicep' = {
 
     forwarding_ruleset_name: 'forwarding-ruleset-01'
   }
+  dependsOn: [
+    vpn_gateway
+  ]
 }
 
 module keyvault 'modules/keyvault.bicep' = {
