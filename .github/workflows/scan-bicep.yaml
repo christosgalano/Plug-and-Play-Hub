@@ -23,15 +23,6 @@ jobs:
           output_format: sarif
           output_file_path: reports/results.sarif
 
-      - name: Commit and push changes
-        run: |
-          git config --global user.name "christosgalano"
-          git config --global user.email "xrholy11.gmail.com"
-
-          git add -A
-          git commit -m "Update reports"
-          git push
-
       - uses: actions/upload-artifact@v3
         with:
           name: scan-report
