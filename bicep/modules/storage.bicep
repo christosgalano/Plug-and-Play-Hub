@@ -56,13 +56,13 @@ param vnet_id string
 param vnet_name string
 
 @description('Name of the storage account blob service private endpoint')
-param ple_blob_name string
+param pep_blob_name string
 
 @description('Location of the storage account blob service private endpoint')
-param ple_blob_location string
+param pep_blob_location string
 
 @description('ID of the subnet where the private endpoint will reside')
-param ple_subnet_id string
+param pep_subnet_id string
 
 // Variables
 
@@ -134,13 +134,13 @@ resource private_dns_zone_vnet_link 'Microsoft.Network/privateDnsZones/virtualNe
   }
 }
 
-resource ple_blob 'Microsoft.Network/privateEndpoints@2022-01-01' = {
-  name: ple_blob_name
-  location: ple_blob_location
+resource pep_blob 'Microsoft.Network/privateEndpoints@2022-01-01' = {
+  name: pep_blob_name
+  location: pep_blob_location
   properties: {
     privateLinkServiceConnections: [
       {
-        name: ple_blob_name
+        name: pep_blob_name
         properties: {
           groupIds: [
             'blob'
@@ -150,13 +150,13 @@ resource ple_blob 'Microsoft.Network/privateEndpoints@2022-01-01' = {
       }
     ]
     subnet: {
-      id: ple_subnet_id
+      id: pep_subnet_id
     }
   }
 }
 
 resource blob_private_dns_zone_group 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
-  parent: ple_blob
+  parent: pep_blob
   name: 'st-blob-private-dns-zone-group'
   properties: {
     privateDnsZoneConfigs: [

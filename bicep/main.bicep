@@ -239,9 +239,9 @@ module keyvault 'modules/keyvault.bicep' = {
     purge_protection_enabled: false
     enabled_for_template_deployment: false
 
-    ple_name: 'ple-kv-${project_id}'
-    ple_location: location
-    ple_subnet_id: network.outputs.snet_shared_id
+    pep_name: 'pep-kv-${project_id}'
+    pep_location: location
+    pep_subnet_id: network.outputs.snet_shared_id
 
     vnet_id: network.outputs.vnet_id
     vnet_name: network.outputs.vnet_name
@@ -264,9 +264,9 @@ module storage 'modules/storage.bicep' = {
     enable_https_traffic_only: true
     allow_cross_tenant_replication: false
 
-    ple_blob_name: 'ple-blob-${project_id}'
-    ple_blob_location: location
-    ple_subnet_id: network.outputs.snet_shared_id
+    pep_blob_name: 'pep-blob-${project_id}'
+    pep_blob_location: location
+    pep_subnet_id: network.outputs.snet_shared_id
 
     vnet_id: network.outputs.vnet_id
     vnet_name: network.outputs.vnet_name
