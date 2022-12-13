@@ -1,19 +1,23 @@
 name: deploy-infra
 
+run-name: ${{ github.workflow }}
+
 on:
   workflow_dispatch:
     inputs:
       deployment_name:
         description: "Define deployment name"
         required: true
+        type: string
 
+# Requirement OIDC
 permissions:
   id-token: write
   contents: read
 
 env:
   SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  DEPLOYMENT_NAME: ${{ github.event.inputs.deployment_name }}
+  DEPLOYMENT_NAME: ${{ inputs.deployment_name }}
 
 jobs:
   lint:
