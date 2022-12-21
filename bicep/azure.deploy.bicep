@@ -39,7 +39,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
 // AzNames module deployment - this will generate all the names of the resources at deployment time.
 module aznames 'modules/aznames.bicep' = {
   scope: resourceGroup(rg.name)
-  name: 'az-names'
+  name: 'aznames-deployment'
   params: {
     suffixes: [
       workload
