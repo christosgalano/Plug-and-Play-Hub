@@ -1,4 +1,4 @@
-// Parameters
+/// Parameters ///
 
 @description('Object of the Azure Names module')
 param aznames object
@@ -23,7 +23,7 @@ param availability_zones array = [
   '3'
 ]
 
-// Modules
+/// Modules ///
 
 module log_workspace 'modules/log_workspace.bicep' = {
   scope: resourceGroup(rg_name)

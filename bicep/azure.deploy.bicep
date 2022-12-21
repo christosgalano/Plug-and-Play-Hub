@@ -1,20 +1,28 @@
 targetScope = 'subscription'
 
+/// Parameters ///
+
 param location string
 param application_name string
 param environment string
 param tags object = {}
 
-// Resource group where the workload will be deployed
+/// Variables ///
+
+var defaultTags = union({
+    applicationName: application_name
+    environment: environment
+  }, tags)
+
+/// Modules & Resources ///
 
 resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: 'rg-${application_name}-${environment}'
   location: location
-  tags: tags
+  tags: defaultTags
 }
 
 // AzNames module deployment - this will generate all the names of the resources at deployment time.
-
 module aznames 'modules/aznames.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'az-names'
@@ -30,7 +38,6 @@ module aznames 'modules/aznames.bicep' = {
 }
 
 // Main module deployment
-
 module main 'main.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'workload-deployment'
@@ -45,4 +52,4 @@ module main 'main.bicep' = {
   }
 }
 
-// Outputs
+/// Outputs ///
