@@ -6,7 +6,7 @@
             "value": "hub"
         },
         "environment": {
-            "value": "prod"
+            "value": "dev"
         },
         "location": {
             "value": "westeurope"
