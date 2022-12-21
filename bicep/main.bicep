@@ -232,7 +232,7 @@ module keyvault 'modules/keyvault.bicep' = {
   name: 'keyvault-deployment'
   params: {
     // name: 'kv-${project_id}-cg'
-    name: aznames.keyVault.refName
+    name: aznames.keyVault.uniName
     location: location
     sku_name: 'standard'
 
