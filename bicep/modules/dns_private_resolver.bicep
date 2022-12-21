@@ -1,4 +1,4 @@
-// Parameters
+/// Parameters ///
 
 @description('Name of the resolver')
 param name string
@@ -27,7 +27,7 @@ param outbound_endpoint_name string
 @description('Name of the forwarding ruleset')
 param forwarding_ruleset_name string
 
-// Resources
+/// Resources ///
 
 resource resolver 'Microsoft.Network/dnsResolvers@2022-07-01' = {
   name: name
@@ -88,6 +88,6 @@ resource resolver_vnet_link 'Microsoft.Network/dnsForwardingRulesets/virtualNetw
   }
 }
 
-// Outputs
+/// Outputs ///
 
 output resolver_id string = resolver.id

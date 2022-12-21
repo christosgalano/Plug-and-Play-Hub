@@ -1,4 +1,4 @@
-// Parameters
+/// Parameters ///
 
 @description('Name of the public ip')
 param name string
@@ -29,7 +29,7 @@ param log_workspace_id string
 @description('Enable diagnostic settings for this resource')
 param diagnostics_settings_enabled bool
 
-// Resources
+/// Resources ///
 
 resource pip 'Microsoft.Network/publicIPAddresses@2021-03-01' = {
   name: name
@@ -63,7 +63,7 @@ resource pip_diagnostics_settings 'Microsoft.Insights/diagnosticSettings@2021-05
   }
 }
 
-// Outputs
+/// Outputs ///
 
 output pip_id string = pip.id
 output ip_address string = pip.properties.ipAddress

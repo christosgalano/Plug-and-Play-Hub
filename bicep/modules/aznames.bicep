@@ -1,4 +1,4 @@
-// Parameters
+/// Parameters ///
 
 @description('suffixes for naming - if not specified, the names will refer to an APPDEMO application in a DEV environment')
 param suffixes array = [
@@ -17,7 +17,7 @@ param uniquifierLength int = 3
 @description('Dashes will be used when possible')
 param useDashes bool = true
 
-// Variables
+/// Variables ///
 
 var separator = useDashes ? '-' : ''
 var useUniquifier = uniquifierLength == 0
@@ -30,7 +30,7 @@ var resourceNameTemplateNoDashes = replace(resourceNameTemplate, separator, '')
 var uniqueResourceNameTemplate = '${azureDummyResource}${definedSuffix}${uniquifierEnd}'
 var uniqueResourceNameTemplateNoDashes = replace(uniqueResourceNameTemplate, separator, '')
 
-// Outputs
+/// Outputs ///
 
 output names object = {
   analysisServicesServer: {

@@ -1,4 +1,4 @@
-// Parameters
+/// Parameters ///
 
 @minLength(3)
 @maxLength(128)
@@ -8,14 +8,14 @@ param name string
 @description('Location of the user managed identity')
 param location string
 
-// Resources
+/// Resources ///
 
 resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
   name: name
   location: location
 }
 
-// Outputs
+/// Outputs ///
 
 output identity_resource_id string = identity.id
 output identity_client_id string = identity.properties.clientId

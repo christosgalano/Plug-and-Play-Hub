@@ -1,4 +1,4 @@
-// Parameters
+/// Parameters ///
 
 @description('Name of the Virtual Network Gateway')
 param name string
@@ -51,7 +51,7 @@ param log_workspace_id string
 @description('Enable diagnostic settings for this resource')
 param diagnostics_settings_enabled bool
 
-// Resources
+/// Resources ///
 
 resource vpn_gateway 'Microsoft.Network/virtualNetworkGateways@2022-05-01' = {
   name: name
@@ -101,6 +101,6 @@ resource vpn_gateway_diagnostic_settings 'Microsoft.Insights/diagnosticSettings@
   }
 }
 
-// Outputs
+/// Outputs ///
 
 output vpn_gateway_id string = vpn_gateway.id

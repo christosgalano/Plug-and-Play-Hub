@@ -1,4 +1,4 @@
-// Parameters
+/// Parameters ///
 
 @description('Name of the Bastion')
 param name string
@@ -32,7 +32,7 @@ param log_workspace_id string
 @description('Enable diagnostic settings for this resource')
 param diagnostics_settings_enabled bool
 
-// Resources
+/// Resources ///
 
 resource bastion 'Microsoft.Network/bastionHosts@2022-01-01' = {
   name: name
@@ -78,6 +78,6 @@ resource bastion_diagnostic_settings 'Microsoft.Insights/diagnosticSettings@2021
   }
 }
 
-// Outputs
+/// Outputs ///
 
 output bastion_id string = bastion.id

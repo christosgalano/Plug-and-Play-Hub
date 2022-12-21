@@ -1,4 +1,4 @@
-// Parameters
+/// Parameters ///
 
 @description('Name of the log analytics workspace')
 param name string
@@ -25,7 +25,7 @@ param retention_days int
 @description('Enable diagnostic settings for this resource')
 param diagnostics_settings_enabled bool
 
-// Resources
+/// Resources ///
 
 resource log_workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: name
@@ -58,6 +58,6 @@ resource log_workspace_diagnostics_settings 'Microsoft.Insights/diagnosticSettin
   }
 }
 
-// Outputs
+/// Outputs ///
 
 output log_workspace_id string = log_workspace.id

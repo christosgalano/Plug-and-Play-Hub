@@ -1,4 +1,4 @@
-// Parameters
+/// Parameters ///
 
 @minLength(3)
 @maxLength(24)
@@ -24,26 +24,7 @@ param purge_protection_enabled bool
 @description('Property to specify whether the soft delete functionality is enabled for this Key Vault')
 param soft_delete_enabled bool
 
-@description('ID of the virtual network to which the private dns zone will be linked')
-param vnet_id string
-
-@description('Name of the virtual network to which the private dns zone will be linked')
-param vnet_name string
-
-@description('Name of the Key Vault private endpoint')
-param pep_name string
-
-@description('Location of the Key Vault private endpoint')
-param pep_location string
-
-@description('ID of the subnet where the private endpoint will reside')
-param pep_subnet_id string
-
-// Variables
-
-var private_dns_zone_name = 'privatelink.vaultcore.azure.net'
-
-// Resources
+/// Resources ///
 
 resource keyvault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: name
@@ -71,59 +52,6 @@ resource keyvault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource private_dns_zone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: private_dns_zone_name
-  location: 'global'
-}
-
-resource private_dns_zone_vnet_link 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  parent: private_dns_zone
-  name: 'vnet-${vnet_name}-link'
-  location: 'global'
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: vnet_id
-    }
-  }
-}
-
-resource pep_kv 'Microsoft.Network/privateEndpoints@2022-01-01' = {
-  name: pep_name
-  location: pep_location
-  properties: {
-    privateLinkServiceConnections: [
-      {
-        name: pep_name
-        properties: {
-          groupIds: [
-            'vault'
-          ]
-          privateLinkServiceId: keyvault.id
-        }
-      }
-    ]
-    subnet: {
-      id: pep_subnet_id
-    }
-  }
-}
-
-resource private_dns_zone_group 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-01-01' = {
-  parent: pep_kv
-  name: 'vault-private-dns-zone-group'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'vault-private-dns-zone-config'
-        properties: {
-          privateDnsZoneId: private_dns_zone.id
-        }
-      }
-    ]
-  }
-}
-
-// Outputs
+/// Outputs ///
 
 output keyvault_id string = keyvault.id

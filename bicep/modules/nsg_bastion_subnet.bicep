@@ -1,4 +1,4 @@
-// Parameters
+/// Parameters ///
 
 @description('Name of the Bastion subnet NSG')
 param name string
@@ -12,7 +12,7 @@ param log_workspace_id string
 @description('Enable diagnostic settings for this resource')
 param diagnostics_settings_enabled bool
 
-// Resources
+/// Resources ///
 
 resource nsg_bastion_subnet 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   name: name
@@ -197,6 +197,6 @@ resource nsg_diagnostics_settings 'Microsoft.Insights/diagnosticSettings@2021-05
   }
 }
 
-// Outputs
+/// Outputs ///
 
 output nsg_id string = nsg_bastion_subnet.id

@@ -1,4 +1,4 @@
-// Parameters
+/// Parameters ///
 
 @description('Name of the virtual network')
 param vnet_name string
@@ -63,7 +63,7 @@ param log_workspace_id string
 @description('Enable diagnostic settings for this resource')
 param diagnostics_settings_enabled bool
 
-// Resources
+/// Resources ///
 
 resource vnet 'Microsoft.Network/virtualNetworks@2022-01-01' = {
   name: vnet_name
@@ -137,7 +137,7 @@ resource vnet_diagnostics_settings 'Microsoft.Insights/diagnosticSettings@2021-0
   }
 }
 
-// Outputs
+/// Outputs ///
 
 output vnet_id string = vnet.id
 output vnet_name string = vnet.name

@@ -1,17 +1,10 @@
-// Parameters
+/// Parameters ///
 
 @description('Name of the Firewall')
 param name string
 
 @description('Location of the Firewall')
 param location string
-
-// @allowed([
-//   'AZFW_Hub'
-//   'AZFW_VNet'
-// ])
-// @description('SKU name of the Firewall')
-// param sku_name string
 
 @allowed([
   'Basic'
@@ -44,7 +37,7 @@ param log_workspace_id string
 @description('Enable diagnostic settings for this resource')
 param diagnostics_settings_enabled bool
 
-// Resources
+/// Resources ///
 
 resource firewall 'Microsoft.Network/azureFirewalls@2022-05-01' = {
   name: name
@@ -91,6 +84,6 @@ resource firewall_diagnostic_settings 'Microsoft.Insights/diagnosticSettings@202
   }
 }
 
-// Outputs
+/// Outputs ///
 
 output firewall_id string = firewall.id

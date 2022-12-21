@@ -13,9 +13,6 @@ param application_name string
 
 param environment string
 
-// @description('Default tags to apply to resources')
-// param tags object = {}
-
 @description('Availability zone numbers e.g. 1,2,3.')
 param availability_zones array = [
   '1'
@@ -29,7 +26,6 @@ module log_workspace 'modules/log_workspace.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'log-workspace-deployment'
   params: {
-    // name: 'log-${project_id}'
     name: aznames.logAnalyticsWorkspace.refName
     location: location
     sku: 'PerGB2018'
@@ -42,7 +38,6 @@ module nsg_bastion_subnet 'modules/nsg_bastion_subnet.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'nsg-bastion-subnet-deployment'
   params: {
-    // name: 'nsg-bastion-subnet-${project_id}'
     name: aznames.networkSecurityGroup.refName
     location: location
 
@@ -55,7 +50,6 @@ module network 'modules/network.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'network-deployment'
   params: {
-    // vnet_name: 'vnet-${project_id}'
     vnet_name: aznames.virtualNetwork.refName
     vnet_location: location
     vnet_address_space: [ '10.1.0.0/22' ]
@@ -88,8 +82,8 @@ module bastion_pip 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-bastion-deployment'
   params: {
-    // name: 'pip-bastion-${project_id}'
-    name: aznames.publicIp.refName
+    // name: aznames.publicIp.refName
+    name: 'pip-bas-${application_name}-${environment}'
     location: location
 
     sku_name: 'Standard'
@@ -106,7 +100,6 @@ module bastion 'modules/bastion.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'bastion-deployment'
   params: {
-    // name: 'bas-${project_id}'
     name: aznames.bastionHost.refName
     location: location
 
@@ -125,8 +118,7 @@ module firewall_pip 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-firewall-deployment'
   params: {
-    // name: 'pip-firewall-${project_id}'
-    name: aznames.publicIp.refName
+    name: 'pip-afw-${application_name}-${environment}'
     location: location
 
     sku_name: 'Standard'
@@ -143,7 +135,6 @@ module firewall 'modules/firewall.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'firewall-deployment'
   params: {
-    // name: 'afw-${project_id}'
     name: aznames.firewall.refName
     location: location
 
@@ -164,8 +155,7 @@ module vpn_gateway_pip 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-vpn-gateway-deployment'
   params: {
-    // name: 'pip-vpn-gateway-${project_id}'
-    name: aznames.publicIp.refName
+    name: 'pip-vpn-${application_name}-${environment}'
     location: location
 
     sku_name: 'Standard'
@@ -182,8 +172,7 @@ module vpn_gateway 'modules/vpn_gateway.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'vpn-gateway-deployment'
   params: {
-    // name: 'vpng-${project_id}'
-    name: aznames.virtualNetworkGateway.refName
+    name: 'vpng-${application_name}-${environment}'
     location: location
 
     gateway_type: 'Vpn'
@@ -231,7 +220,6 @@ module keyvault 'modules/keyvault.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'keyvault-deployment'
   params: {
-    // name: 'kv-${project_id}-cg'
     name: aznames.keyVault.uniName
     location: location
     sku_name: 'standard'
@@ -239,13 +227,37 @@ module keyvault 'modules/keyvault.bicep' = {
     soft_delete_enabled: false
     purge_protection_enabled: false
     enabled_for_template_deployment: false
+  }
+}
 
-    pep_name: 'pep-kv-${application_name}-${environment}'
-    pep_location: location
-    pep_subnet_id: network.outputs.snet_shared_id
+module vault_private_dns_zone 'modules/private_dns_zone.bicep' = {
+  name: 'vault-private-dns-zone-deployment'
+  params: {
+    private_dns_zone_name: 'privatelink.vaultcore.azure.net'
+    vnet_ids: [ network.outputs.vnet_id ]
+    vnet_names: [ network.outputs.vnet_name ]
+  }
+}
 
-    vnet_id: network.outputs.vnet_id
-    vnet_name: network.outputs.vnet_name
+module keyvault_pep 'modules/private_endpoint.bicep' = {
+  name: 'keyvault-pep-deployment'
+  params: {
+    name: 'pep-kv-${application_name}-${environment}'
+    location: location
+
+    group_ids: [ 'vault' ]
+    private_link_service_id: keyvault.outputs.keyvault_id
+
+    subnet_id: network.outputs.snet_shared_id
+  }
+}
+
+module keyvault_pep_private_dns_zone_group 'modules/private_dns_zone_group.bicep' = {
+  name: 'keyvault-pep-private-dns-zone-group-deployment'
+  params: {
+    private_dns_zone_group_name: 'vault-private-dns-zone-group'
+    pep_name: keyvault_pep.outputs.pep_name
+    private_dns_zone_id: vault_private_dns_zone.outputs.zone_id
   }
 }
 
@@ -253,7 +265,6 @@ module storage 'modules/storage.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'storage-deployment'
   params: {
-    // name: 'st${project_id}${uniqueString(subscription().subscriptionId)}'
     name: aznames.storageAccount.uniName
     location: location
 
@@ -265,12 +276,67 @@ module storage 'modules/storage.bicep' = {
     allow_blob_public_access: false
     enable_https_traffic_only: true
     allow_cross_tenant_replication: false
+  }
+}
 
-    pep_blob_name: 'pep-blob-${application_name}-${environment}'
-    pep_blob_location: location
-    pep_subnet_id: network.outputs.snet_shared_id
+module blob_private_dns_zone 'modules/private_dns_zone.bicep' = {
+  name: 'blob-private-dns-zone-deployment'
+  params: {
+    private_dns_zone_name: 'privatelink.blob.core.windows.net'
+    vnet_ids: [ network.outputs.vnet_id ]
+    vnet_names: [ network.outputs.vnet_name ]
+  }
+}
 
-    vnet_id: network.outputs.vnet_id
-    vnet_name: network.outputs.vnet_name
+module file_private_dns_zone 'modules/private_dns_zone.bicep' = {
+  name: 'file-private-dns-zone-deployment'
+  params: {
+    private_dns_zone_name: 'privatelink.file.core.windows.net'
+    vnet_ids: [ network.outputs.vnet_id ]
+    vnet_names: [ network.outputs.vnet_name ]
+  }
+}
+
+module storage_blob_pep 'modules/private_endpoint.bicep' = {
+  name: 'storage-blob-pep-deployment'
+  params: {
+    name: 'pep-blob-${application_name}-${environment}'
+    location: location
+
+    group_ids: [ 'blob' ]
+    private_link_service_id: storage.outputs.storage_id
+
+    subnet_id: network.outputs.snet_shared_id
+  }
+}
+
+module storage_file_pep 'modules/private_endpoint.bicep' = {
+  name: 'storage-file-pep-deployment'
+  params: {
+    name: 'pep-file-${application_name}-${environment}'
+    location: location
+
+    group_ids: [ 'file' ]
+    private_link_service_id: storage.outputs.storage_id
+
+    subnet_id: network.outputs.snet_shared_id
+  }
+}
+
+module storage_blob_pep_private_dns_zone_group 'modules/private_dns_zone_group.bicep' = {
+  name: 'storage-blob-pep-private-dns-zone-group-deployment'
+  params: {
+    private_dns_zone_group_name: 'blob-private-dns-zone-group'
+    pep_name: storage_blob_pep.outputs.pep_name
+    private_dns_zone_id: blob_private_dns_zone.outputs.zone_id
+  }
+}
+
+module storage_file_pep_private_dns_zone_group 'modules/private_dns_zone_group.bicep' = {
+  name: 'storage-file-pep-private-dns-zone-group-deployment'
+  params: {
+    private_dns_zone_group_name: 'file-private-dns-zone-group'
+    pep_name: storage_file_pep.outputs.pep_name
+    private_dns_zone_id: file_private_dns_zone.outputs.zone_id
   }
 }
