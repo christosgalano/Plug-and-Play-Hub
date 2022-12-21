@@ -27,15 +27,6 @@ param availability_zones array = [
 
 /// Modules ///
 
-module default_nsg 'modules/nsg.bicep' = {
-  name: 'nsg-deployment'
-  params: {
-    name: aznames.networkSecurityGroup.refName
-    location: location
-    security_rules: []
-  }
-}
-
 module log_workspace 'modules/log_workspace.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'log-workspace-deployment'
@@ -281,6 +272,8 @@ module storage 'modules/storage.bicep' = {
     allow_blob_public_access: false
     enable_https_traffic_only: true
     allow_cross_tenant_replication: false
+
+    minimum_tls_version: 'TLS1_2'
   }
 }
 
