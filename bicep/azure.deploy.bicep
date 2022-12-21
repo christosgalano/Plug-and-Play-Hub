@@ -7,6 +7,13 @@ param application_name string
 param environment string
 param tags object = {}
 
+@description('Availability zone numbers e.g. 1,2,3.')
+param availability_zones array = [
+  '1'
+  '2'
+  '3'
+]
+
 /// Variables ///
 
 var defaultTags = union({
@@ -47,7 +54,7 @@ module main 'main.bicep' = {
     rg_name: rg.name
     application_name: application_name
     environment: environment
-    availability_zones: []
+    availability_zones: availability_zones
     // tags: tags
   }
 }
