@@ -28,7 +28,17 @@ rule:
   includeLocal: true
   exclude:
     # Ignore the following rules for all resources
+
+    # Generic
     - Azure.Resource.UseTags
     - Azure.Template.UseDescriptions
-    - Azure.VNET.UseNSGs # Create NSGs using the nsg.bicep module and providing your own security rules
-    - Azure.Firewall.Mode # Alert by default and not Deny
+
+    # Create NSGs using the nsg.bicep module and providing your own security rules
+    - Azure.VNET.UseNSGs
+
+    # Alert by default and not Deny
+    - Azure.Firewall.Mode
+
+    # We are not creating any blob containers
+    - Azure.Storage.SoftDelete
+    - Azure.Storage.ContainerSoftDelete
