@@ -57,6 +57,12 @@ param allow_cross_tenant_replication bool
 @description('Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property.')
 param minimum_tls_version string = 'TLS1_0'
 
+@description('The ID of the workspace to be used for the Storage account diagnostic settings')
+param log_workspace_id string
+
+@description('Enable diagnostic settings for this resource')
+param diagnostics_settings_enabled bool
+
 /// Variables ///
 
 var name_cleaned = replace(name, '-', '')
@@ -108,6 +114,20 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
       ipRules: []
       virtualNetworkRules: []
     }
+  }
+}
+
+resource storage_diagnostic_settings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (diagnostics_settings_enabled) {
+  name: '${name}-ds'
+  scope: storage
+  properties: {
+    workspaceId: log_workspace_id
+    metrics: [
+      {
+        category: 'Transaction'
+        enabled: true
+      }
+    ]
   }
 }
 

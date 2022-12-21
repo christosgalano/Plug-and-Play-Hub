@@ -291,6 +291,9 @@ module storage 'modules/storage.bicep' = {
     allow_cross_tenant_replication: false
 
     minimum_tls_version: 'TLS1_2'
+
+    diagnostics_settings_enabled: true
+    log_workspace_id: log_workspace.outputs.log_workspace_id
   }
 }
 
