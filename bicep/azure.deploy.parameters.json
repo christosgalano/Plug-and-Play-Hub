@@ -2,16 +2,16 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "application_name": {
+        "workload": {
             "value": "hub"
         },
         "environment": {
-            "value": "dev"
+            "value": "shared"
         },
         "location": {
             "value": "westeurope"
         },
-        "tags": {
+        "rg_tags": {
             "value": {
                 "owner": "myself",
                 "costCenter": "personal wallet"

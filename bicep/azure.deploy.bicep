@@ -2,10 +2,17 @@ targetScope = 'subscription'
 
 /// Parameters ///
 
+@description('Azure region used for the deployment of all resources')
 param location string
-param application_name string
+
+@description('Name of the workload that will be deployed')
+param workload string
+
+@description('Name of the workloads environment')
 param environment string
-param tags object = {}
+
+@description('Tags to be applied on the resource group')
+param rg_tags object = {}
 
 @description('Availability zone numbers e.g. 1,2,3.')
 param availability_zones array = [
@@ -16,17 +23,17 @@ param availability_zones array = [
 
 /// Variables ///
 
-var defaultTags = union({
-    applicationName: application_name
+var tags = union({
+    workload: workload
     environment: environment
-  }, tags)
+  }, rg_tags)
 
 /// Modules & Resources ///
 
 resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-  name: 'rg-${application_name}-${environment}'
+  name: 'rg-${workload}-${environment}'
   location: location
-  tags: defaultTags
+  tags: tags
 }
 
 // AzNames module deployment - this will generate all the names of the resources at deployment time.
@@ -35,7 +42,7 @@ module aznames 'modules/aznames.bicep' = {
   name: 'az-names'
   params: {
     suffixes: [
-      application_name
+      workload
       environment
     ]
     uniquifierLength: 3
@@ -52,7 +59,7 @@ module main 'main.bicep' = {
     aznames: aznames.outputs.names
     location: location
     rg_name: rg.name
-    application_name: application_name
+    workload: workload
     environment: environment
     availability_zones: availability_zones
     // tags: tags
