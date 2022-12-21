@@ -24,6 +24,12 @@ param purge_protection_enabled bool
 @description('Property to specify whether the soft delete functionality is enabled for this Key Vault')
 param soft_delete_enabled bool
 
+@description('The ID of the workspace to be used for the Keyvault diagnostic settings')
+param log_workspace_id string
+
+@description('Enable diagnostic settings for this resource')
+param diagnostics_settings_enabled bool
+
 /// Resources ///
 
 resource keyvault 'Microsoft.KeyVault/vaults@2022-07-01' = {
@@ -49,6 +55,20 @@ resource keyvault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     }
 
     accessPolicies: []
+  }
+}
+
+resource keyvault_diagnostic_settings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (diagnostics_settings_enabled) {
+  name: '${name}-ds'
+  scope: keyvault
+  properties: {
+    workspaceId: log_workspace_id
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
   }
 }
 

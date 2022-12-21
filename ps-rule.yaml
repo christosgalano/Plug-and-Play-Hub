@@ -30,3 +30,5 @@ rule:
     # Ignore the following rules for all resources
     - Azure.Resource.UseTags
     - Azure.Template.UseDescriptions
+    - Azure.VNET.UseNSGs # Add NSGs with your own rules for each subnet
+    - Azure.Firewall.Mode # Alert by default and not Deny

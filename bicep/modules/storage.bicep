@@ -49,6 +49,14 @@ param enable_https_traffic_only bool
 @description('Specifies whether to allow or disallow cross AAD tenant object replication')
 param allow_cross_tenant_replication bool
 
+@allowed([
+  'TLS1_0'
+  'TLS1_1'
+  'TLS1_2'
+])
+@description('Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property.')
+param minimum_tls_version string = 'TLS1_0'
+
 /// Variables ///
 
 var name_cleaned = replace(name, '-', '')
@@ -69,6 +77,8 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
     allowBlobPublicAccess: allow_blob_public_access
     supportsHttpsTrafficOnly: enable_https_traffic_only
     allowCrossTenantReplication: allow_cross_tenant_replication
+
+    minimumTlsVersion: minimum_tls_version
 
     encryption: {
       keySource: 'Microsoft.Storage'

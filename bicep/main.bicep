@@ -27,6 +27,15 @@ param availability_zones array = [
 
 /// Modules ///
 
+module default_nsg 'modules/nsg.bicep' = {
+  name: 'nsg-deployment'
+  params: {
+    name: aznames.networkSecurityGroup.refName
+    location: location
+    security_rules: []
+  }
+}
+
 module log_workspace 'modules/log_workspace.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'log-workspace-deployment'
@@ -179,6 +188,8 @@ module vpn_gateway 'modules/vpn_gateway.bicep' = {
     private_ip_allocation_method: 'Dynamic'
     snet_id: network.outputs.snet_gateway_id
 
+    active_active: true
+
     diagnostics_settings_enabled: true
     log_workspace_id: log_workspace.outputs.log_workspace_id
   }
@@ -215,9 +226,12 @@ module keyvault 'modules/keyvault.bicep' = {
     location: location
     sku_name: 'standard'
 
-    soft_delete_enabled: false
-    purge_protection_enabled: false
+    soft_delete_enabled: true
+    purge_protection_enabled: true
     enabled_for_template_deployment: false
+
+    diagnostics_settings_enabled: true
+    log_workspace_id: log_workspace.outputs.log_workspace_id
   }
 }
 
@@ -260,7 +274,7 @@ module storage 'modules/storage.bicep' = {
     location: location
 
     kind: 'StorageV2'
-    sku: 'Standard_ZRS'
+    sku: 'Standard_GRS'
     access_tier: 'Hot'
 
     allow_shared_key_access: true

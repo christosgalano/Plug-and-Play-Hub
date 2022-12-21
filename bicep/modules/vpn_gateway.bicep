@@ -45,6 +45,9 @@ param snet_id string
 @description('The ID of the public ip to be used for the Virtual Network Gateway')
 param pip_id string
 
+@description('ActiveActive flag.')
+param active_active bool
+
 @description('The ID of the workspace to be used for the Virtual Network Gateway diagnostic settings')
 param log_workspace_id string
 
@@ -64,6 +67,7 @@ resource vpn_gateway 'Microsoft.Network/virtualNetworkGateways@2022-05-01' = {
     gatewayType: gateway_type
     vpnType: vpn_type
     vpnGatewayGeneration: vpn_gateway_generation
+    activeActive: active_active
     ipConfigurations: [
       {
         name: 'vpn-gateway-ip-configuration'
