@@ -11,6 +11,9 @@
         "location": {
             "value": "westeurope"
         },
+        "location_abbreviation": {
+            "value": "weu"
+        },
         "rg_tags": {
             "value": {
                 "owner": "myself",

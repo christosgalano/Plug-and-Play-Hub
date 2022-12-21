@@ -5,6 +5,9 @@ targetScope = 'subscription'
 @description('Azure region used for the deployment of all resources')
 param location string
 
+@description('Abbreviation fo the location')
+param location_abbreviation string
+
 @description('Name of the workload that will be deployed')
 param workload string
 
@@ -44,6 +47,7 @@ module aznames 'modules/aznames.bicep' = {
     suffixes: [
       workload
       environment
+      location_abbreviation
     ]
     uniquifierLength: 3
     uniquifier: rg.id
