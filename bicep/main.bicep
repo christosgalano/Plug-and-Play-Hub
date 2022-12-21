@@ -1,14 +1,20 @@
-targetScope = 'subscription'
-
 // Parameters
 
-@minLength(2)
-@maxLength(5)
-@description('Project identifier that is going to be included in every resource name')
-param project_id string
+@description('Object of the Azure Names module')
+param aznames object
+
+@description('name of the resource group where the workload will be deployed')
+param rg_name string
 
 @description('Azure region used for the deployment of all resources')
 param location string
+
+param application_name string
+
+param environment string
+
+// @description('Default tags to apply to resources')
+// param tags object = {}
 
 @description('Availability zone numbers e.g. 1,2,3.')
 param availability_zones array = [
@@ -17,40 +23,27 @@ param availability_zones array = [
   '3'
 ]
 
-// Variables
-
-var rg_name = 'rg-${project_id}'
-
 // Modules
-
-module rg 'modules/resource_group.bicep' = {
-  name: 'rg-deployment'
-  params: {
-    name: rg_name
-    location: location
-  }
-}
 
 module log_workspace 'modules/log_workspace.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'log-workspace-deployment'
   params: {
-    name: 'log-${project_id}'
+    // name: 'log-${project_id}'
+    name: aznames.logAnalyticsWorkspace.refName
     location: location
     sku: 'PerGB2018'
     retention_days: 30
     diagnostics_settings_enabled: true
   }
-  dependsOn: [
-    rg
-  ]
 }
 
 module nsg_bastion_subnet 'modules/nsg_bastion_subnet.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'nsg-bastion-subnet-deployment'
   params: {
-    name: 'nsg-bastion-subnet-${project_id}'
+    // name: 'nsg-bastion-subnet-${project_id}'
+    name: aznames.networkSecurityGroup.refName
     location: location
 
     diagnostics_settings_enabled: true
@@ -62,7 +55,8 @@ module network 'modules/network.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'network-deployment'
   params: {
-    vnet_name: 'vnet-${project_id}'
+    // vnet_name: 'vnet-${project_id}'
+    vnet_name: aznames.virtualNetwork.refName
     vnet_location: location
     vnet_address_space: [ '10.1.0.0/22' ]
 
@@ -76,13 +70,13 @@ module network 'modules/network.bicep' = {
     snet_gateway_name: 'GatewaySubnet'
     snet_gateway_address_prefix: '10.1.2.128/26'
 
-    snet_inbound_endpoint_name: 'snet-inbound-${project_id}'
+    snet_inbound_endpoint_name: 'snet-inbound'
     snet_inbound_endpoint_address_prefix: '10.1.0.0/24'
 
-    snet_outbound_endpoint_name: 'snet-outbound-${project_id}'
+    snet_outbound_endpoint_name: 'snet-outbound'
     snet_outbound_endpoint_address_prefix: '10.1.1.0/24'
 
-    snet_shared_name: 'snet-shared-${project_id}'
+    snet_shared_name: 'snet-shared'
     snet_shared_address_prefix: '10.1.2.192/26'
 
     diagnostics_settings_enabled: true
@@ -94,7 +88,8 @@ module bastion_pip 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-bastion-deployment'
   params: {
-    name: 'pip-bastion-${project_id}'
+    // name: 'pip-bastion-${project_id}'
+    name: aznames.publicIp.refName
     location: location
 
     sku_name: 'Standard'
@@ -111,7 +106,8 @@ module bastion 'modules/bastion.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'bastion-deployment'
   params: {
-    name: 'bas-${project_id}'
+    // name: 'bas-${project_id}'
+    name: aznames.bastionHost.refName
     location: location
 
     sku_name: 'Standard'
@@ -129,7 +125,8 @@ module firewall_pip 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-firewall-deployment'
   params: {
-    name: 'pip-firewall-${project_id}'
+    // name: 'pip-firewall-${project_id}'
+    name: aznames.publicIp.refName
     location: location
 
     sku_name: 'Standard'
@@ -146,7 +143,8 @@ module firewall 'modules/firewall.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'firewall-deployment'
   params: {
-    name: 'afw-${project_id}'
+    // name: 'afw-${project_id}'
+    name: aznames.firewall.refName
     location: location
 
     sku_tier: 'Premium'
@@ -166,7 +164,8 @@ module vpn_gateway_pip 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-vpn-gateway-deployment'
   params: {
-    name: 'pip-vpn-gateway-${project_id}'
+    // name: 'pip-vpn-gateway-${project_id}'
+    name: aznames.publicIp.refName
     location: location
 
     sku_name: 'Standard'
@@ -183,7 +182,8 @@ module vpn_gateway 'modules/vpn_gateway.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'vpn-gateway-deployment'
   params: {
-    name: 'vpng-${project_id}'
+    // name: 'vpng-${project_id}'
+    name: aznames.virtualNetworkGateway.refName
     location: location
 
     gateway_type: 'Vpn'
@@ -208,7 +208,7 @@ module dns_private_resolver 'modules/dns_private_resolver.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'dns-private-resolver-deployment'
   params: {
-    name: 'dpr-${project_id}'
+    name: 'dpr-${application_name}-${environment}'
     location: location
 
     inbound_endpoint_name: 'inbound-endpoint-01'
@@ -231,7 +231,8 @@ module keyvault 'modules/keyvault.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'keyvault-deployment'
   params: {
-    name: 'kv-${project_id}-cg'
+    // name: 'kv-${project_id}-cg'
+    name: aznames.keyVault.refName
     location: location
     sku_name: 'standard'
 
@@ -239,7 +240,7 @@ module keyvault 'modules/keyvault.bicep' = {
     purge_protection_enabled: false
     enabled_for_template_deployment: false
 
-    pep_name: 'pep-kv-${project_id}'
+    pep_name: 'pep-kv-${application_name}-${environment}'
     pep_location: location
     pep_subnet_id: network.outputs.snet_shared_id
 
@@ -252,7 +253,8 @@ module storage 'modules/storage.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'storage-deployment'
   params: {
-    name: 'st${project_id}${uniqueString(subscription().subscriptionId)}'
+    // name: 'st${project_id}${uniqueString(subscription().subscriptionId)}'
+    name: aznames.storageAccount.uniName
     location: location
 
     kind: 'StorageV2'
@@ -264,7 +266,7 @@ module storage 'modules/storage.bicep' = {
     enable_https_traffic_only: true
     allow_cross_tenant_replication: false
 
-    pep_blob_name: 'pep-blob-${project_id}'
+    pep_blob_name: 'pep-blob-${application_name}-${environment}'
     pep_blob_location: location
     pep_subnet_id: network.outputs.snet_shared_id
 
