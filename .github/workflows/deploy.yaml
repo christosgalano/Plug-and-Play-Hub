@@ -94,4 +94,4 @@ jobs:
             --name "$DEPLOYMENT_NAME" \
             --location westeurope \
             --template-file azure.deploy.bicep \
-            --parameters "azure.deploy.parameters"
+            --parameters "azure.deploy.parameters.json"
