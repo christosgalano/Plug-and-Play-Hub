@@ -34,7 +34,7 @@ var tags = union({
 /// Modules & Resources ///
 
 resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-  name: 'rg-${workload}-${environment}'
+  name: 'rg-${workload}-${environment}-${location_abbreviation}'
   location: location
   tags: tags
 }
@@ -62,12 +62,10 @@ module main 'main.bicep' = {
   params: {
     aznames: aznames.outputs.names
     location: location
+    location_abbreviation: location_abbreviation
     rg_name: rg.name
     workload: workload
     environment: environment
     availability_zones: availability_zones
-    // tags: tags
   }
 }
-
-/// Outputs ///

@@ -9,6 +9,9 @@ param rg_name string
 @description('Azure region used for the deployment of all resources')
 param location string
 
+@description('Abbreviation fo the location')
+param location_abbreviation string
+
 @description('Name of the workload that will be deployed')
 param workload string
 
@@ -71,8 +74,7 @@ module bastion_pip 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-bastion-deployment'
   params: {
-    // name: aznames.publicIp.refName
-    name: 'pip-bas-${workload}-${environment}'
+    name: 'pip-bas-${workload}-${environment}-${location_abbreviation}'
     location: location
 
     sku_name: 'Standard'
@@ -107,7 +109,7 @@ module firewall_pip 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-firewall-deployment'
   params: {
-    name: 'pip-afw-${workload}-${environment}'
+    name: 'pip-afw-${workload}-${environment}-${location_abbreviation}'
     location: location
 
     sku_name: 'Standard'
@@ -144,7 +146,7 @@ module vpn_gateway_pip 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-vpn-gateway-deployment'
   params: {
-    name: 'pip-vpn-${workload}-${environment}'
+    name: 'pip-vpn-${workload}-${environment}-${location_abbreviation}'
     location: location
 
     sku_name: 'Standard'
@@ -161,7 +163,7 @@ module vpn_gateway 'modules/vpn_gateway.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'vpn-gateway-deployment'
   params: {
-    name: 'vpng-${workload}-${environment}'
+    name: 'vpng-${workload}-${environment}-${location_abbreviation}'
     location: location
 
     gateway_type: 'Vpn'
@@ -186,7 +188,7 @@ module dns_private_resolver 'modules/dns_private_resolver.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'dns-private-resolver-deployment'
   params: {
-    name: 'dpr-${workload}-${environment}'
+    name: 'dpr-${workload}-${environment}-${location_abbreviation}'
     location: location
 
     inbound_endpoint_name: 'inbound-endpoint-01'
@@ -231,7 +233,7 @@ module vault_private_dns_zone 'modules/private_dns_zone.bicep' = {
 module keyvault_pep 'modules/private_endpoint.bicep' = {
   name: 'keyvault-pep-deployment'
   params: {
-    name: 'pep-kv-${workload}-${environment}'
+    name: 'pep-kv-${workload}-${environment}-${location_abbreviation}'
     location: location
 
     group_ids: [ 'vault' ]
@@ -289,7 +291,7 @@ module file_private_dns_zone 'modules/private_dns_zone.bicep' = {
 module storage_blob_pep 'modules/private_endpoint.bicep' = {
   name: 'storage-blob-pep-deployment'
   params: {
-    name: 'pep-blob-${workload}-${environment}'
+    name: 'pep-blob-${workload}-${environment}-${location_abbreviation}'
     location: location
 
     group_ids: [ 'blob' ]
@@ -302,7 +304,7 @@ module storage_blob_pep 'modules/private_endpoint.bicep' = {
 module storage_file_pep 'modules/private_endpoint.bicep' = {
   name: 'storage-file-pep-deployment'
   params: {
-    name: 'pep-file-${workload}-${environment}'
+    name: 'pep-file-${workload}-${environment}-${location_abbreviation}'
     location: location
 
     group_ids: [ 'file' ]
