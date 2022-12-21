@@ -18,9 +18,6 @@ param snet_bastion_name string
 @description('Address space of the subnet where the Bastion will reside')
 param snet_bastion_address_prefix string
 
-@description('The ID of the NSG applied to the Bastion subnet')
-param bastion_subnet_nsg_id string
-
 @allowed([
   'AzureFirewallSubnet'
 ])
@@ -77,9 +74,6 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-01-01' = {
         name: snet_bastion_name
         properties: {
           addressPrefix: snet_bastion_address_prefix
-          networkSecurityGroup: {
-            id: bastion_subnet_nsg_id
-          }
         }
       }
       {

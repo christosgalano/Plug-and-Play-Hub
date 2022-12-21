@@ -34,18 +34,6 @@ module log_workspace 'modules/log_workspace.bicep' = {
   }
 }
 
-module nsg_bastion_subnet 'modules/nsg_bastion_subnet.bicep' = {
-  scope: resourceGroup(rg_name)
-  name: 'nsg-bastion-subnet-deployment'
-  params: {
-    name: aznames.networkSecurityGroup.refName
-    location: location
-
-    diagnostics_settings_enabled: true
-    log_workspace_id: log_workspace.outputs.log_workspace_id
-  }
-}
-
 module network 'modules/network.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'network-deployment'
@@ -56,7 +44,6 @@ module network 'modules/network.bicep' = {
 
     snet_bastion_name: 'AzureBastionSubnet'
     snet_bastion_address_prefix: '10.1.2.0/26'
-    bastion_subnet_nsg_id: nsg_bastion_subnet.outputs.nsg_id
 
     snet_firewall_name: 'AzureFirewallSubnet'
     snet_firewall_address_prefix: '10.1.2.64/26'
