@@ -42,8 +42,8 @@ param private_ip_allocation_method string
 @description('The ID of the subnet the Virtual Network Gateway will be deployed into')
 param snet_id string
 
-@description('The ID of the public ip to be used for the Virtual Network Gateway')
-param pip_id string
+@description('The ID of the public ips to be used for the Virtual Network Gateway')
+param pip_ids array
 
 @description('ActiveActive flag.')
 param active_active bool
@@ -53,6 +53,21 @@ param log_workspace_id string
 
 @description('Enable diagnostic settings for this resource')
 param diagnostics_settings_enabled bool
+
+/// Variables ///
+
+var ip_configurations = [for i in range(0, length(pip_ids)): {
+  name: 'vpn-gateway-ip-configuration-${i}'
+  properties: {
+    privateIPAllocationMethod: private_ip_allocation_method
+    subnet: {
+      id: snet_id
+    }
+    publicIPAddress: {
+      id: pip_ids[i]
+    }
+  }
+}]
 
 /// Resources ///
 
@@ -68,20 +83,7 @@ resource vpn_gateway 'Microsoft.Network/virtualNetworkGateways@2022-05-01' = {
     vpnType: vpn_type
     vpnGatewayGeneration: vpn_gateway_generation
     activeActive: active_active
-    ipConfigurations: [
-      {
-        name: 'vpn-gateway-ip-configuration'
-        properties: {
-          privateIPAllocationMethod: private_ip_allocation_method
-          subnet: {
-            id: snet_id
-          }
-          publicIPAddress: {
-            id: pip_id
-          }
-        }
-      }
-    ]
+    ipConfigurations: ip_configurations
   }
 }
 

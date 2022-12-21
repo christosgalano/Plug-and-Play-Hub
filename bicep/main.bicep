@@ -142,11 +142,28 @@ module firewall 'modules/firewall.bicep' = {
   }
 }
 
-module vpn_gateway_pip 'modules/public_ip.bicep' = {
+module vpn_gateway_pip_1 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
-  name: 'pip-vpn-gateway-deployment'
+  name: 'pip-vpn-gateway-deployment-1'
   params: {
-    name: 'pip-vpn-${workload}-${environment}-${location_abbreviation}'
+    name: 'pip-vpn-${workload}-${environment}-${location_abbreviation}-01'
+    location: location
+
+    sku_name: 'Standard'
+    allocation_method: 'Static'
+
+    availability_zones: availability_zones
+
+    diagnostics_settings_enabled: true
+    log_workspace_id: log_workspace.outputs.log_workspace_id
+  }
+}
+
+module vpn_gateway_pip_2 'modules/public_ip.bicep' = {
+  scope: resourceGroup(rg_name)
+  name: 'pip-vpn-gateway-deployment-2'
+  params: {
+    name: 'pip-vpn-${workload}-${environment}-${location_abbreviation}-02'
     location: location
 
     sku_name: 'Standard'
@@ -174,7 +191,7 @@ module vpn_gateway 'modules/vpn_gateway.bicep' = {
     sku_name: 'VpnGw2AZ'
     sku_tier: 'VpnGw2AZ'
 
-    pip_id: vpn_gateway_pip.outputs.pip_id
+    pip_ids: [ vpn_gateway_pip_1.outputs.pip_id, vpn_gateway_pip_2.outputs.pip_id ]
 
     private_ip_allocation_method: 'Dynamic'
     snet_id: network.outputs.snet_gateway_id
