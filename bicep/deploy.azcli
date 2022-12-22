@@ -1,0 +1,7 @@
+az bicep build --file azure.deploy.bicep
+
+az deployment sub what-if --name "hub-deployment" --location westeurope --template-file azure.deploy.bicep --parameters azure.deploy.parameters.json
+
+az deployment sub validate --name "hub-deployment" --location westeurope --template-file azure.deploy.bicep --parameters azure.deploy.parameters.json
+
+az deployment sub create --name "hub-deployment" --location westeurope --template-file azure.deploy.bicep --parameters azure.deploy.parameters.json
