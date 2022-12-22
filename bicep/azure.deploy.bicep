@@ -39,19 +39,21 @@ resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   tags: tags
 }
 
-// AzNames module deployment - this will generate all the names of the resources at deployment time.
-module aznames 'modules/aznames.bicep' = {
+// Azure Naming module deployment - this will generate all the names of the resources at deployment time.
+module naming 'modules/naming.bicep' = {
   scope: resourceGroup(rg.name)
-  name: 'aznames-deployment'
+  name: 'azure-naming-deployment'
   params: {
-    suffixes: [
+    location: location
+    suffix: [
       workload
       environment
-      location_abbreviation
+      '**location**' // azure-naming location/region placeholder, it will be replaced with its abbreviation
     ]
-    uniquifierLength: 5
-    uniquifier: rg.id
+    uniqueLength: 5
+    uniqueSeed: rg.id
     useDashes: true
+    useLowerCase: true
   }
 }
 
@@ -60,12 +62,15 @@ module main 'main.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'workload-deployment'
   params: {
-    aznames: aznames.outputs.names
+    naming: naming.outputs.names
+    rg_name: rg.name
+
     location: location
     location_abbreviation: location_abbreviation
-    rg_name: rg.name
+
     workload: workload
     environment: environment
+
     availability_zones: availability_zones
   }
 }

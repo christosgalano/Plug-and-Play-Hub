@@ -1,7 +1,7 @@
 /// Parameters ///
 
-@description('Object of the Azure Names module')
-param aznames object
+@description('Object of the Azure Naming module')
+param naming object
 
 @description('name of the resource group where the workload will be deployed')
 param rg_name string
@@ -25,13 +25,17 @@ param availability_zones array = [
   '3'
 ]
 
+/// Variables ///
+
+var suffix = '${workload}-${environment}-${location_abbreviation}'
+
 /// Modules ///
 
 module log_workspace 'modules/log_workspace.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'log-workspace-deployment'
   params: {
-    name: aznames.logAnalyticsWorkspace.refName
+    name: naming.logAnalyticsWorkspace.name
     location: location
     sku: 'PerGB2018'
     retention_days: 30
@@ -43,7 +47,7 @@ module network 'modules/network.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'network-deployment'
   params: {
-    vnet_name: aznames.virtualNetwork.refName
+    vnet_name: naming.virtualNetwork.name
     vnet_location: location
     vnet_address_space: [ '10.1.0.0/22' ]
 
@@ -74,7 +78,7 @@ module bastion_pip 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-bastion-deployment'
   params: {
-    name: 'pip-bas-${workload}-${environment}-${location_abbreviation}'
+    name: 'pip-bas-${suffix}'
     location: location
 
     sku_name: 'Standard'
@@ -91,7 +95,7 @@ module bastion 'modules/bastion.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'bastion-deployment'
   params: {
-    name: aznames.bastionHost.refName
+    name: naming.bastionHost.name
     location: location
 
     sku_name: 'Standard'
@@ -109,7 +113,7 @@ module firewall_pip 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-firewall-deployment'
   params: {
-    name: 'pip-afw-${workload}-${environment}-${location_abbreviation}'
+    name: 'pip-afw-${suffix}'
     location: location
 
     sku_name: 'Standard'
@@ -126,7 +130,7 @@ module firewall 'modules/firewall.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'firewall-deployment'
   params: {
-    name: aznames.firewall.refName
+    name: naming.firewall.name
     location: location
 
     sku_tier: 'Premium'
@@ -146,7 +150,7 @@ module vpn_gateway_pip_1 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-vpn-gateway-deployment-1'
   params: {
-    name: 'pip-vpn-${workload}-${environment}-${location_abbreviation}-01'
+    name: 'pip-vpn-${suffix}-01'
     location: location
 
     sku_name: 'Standard'
@@ -163,7 +167,7 @@ module vpn_gateway_pip_2 'modules/public_ip.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'pip-vpn-gateway-deployment-2'
   params: {
-    name: 'pip-vpn-${workload}-${environment}-${location_abbreviation}-02'
+    name: 'pip-vpn-${suffix}-02'
     location: location
 
     sku_name: 'Standard'
@@ -180,7 +184,7 @@ module vpn_gateway 'modules/vpn_gateway.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'vpn-gateway-deployment'
   params: {
-    name: 'vpng-${workload}-${environment}-${location_abbreviation}'
+    name: 'vpng-${suffix}'
     location: location
 
     gateway_type: 'Vpn'
@@ -207,7 +211,7 @@ module dns_private_resolver 'modules/dns_private_resolver.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'dns-private-resolver-deployment'
   params: {
-    name: 'dpr-${workload}-${environment}-${location_abbreviation}'
+    name: 'dpr-${suffix}'
     location: location
 
     inbound_endpoint_name: 'inbound-endpoint-01'
@@ -230,7 +234,7 @@ module keyvault 'modules/keyvault.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'keyvault-deployment'
   params: {
-    name: aznames.keyVault.uniName
+    name: naming.keyVault.nameUnique
     location: location
     sku_name: 'standard'
 
@@ -255,7 +259,7 @@ module vault_private_dns_zone 'modules/private_dns_zone.bicep' = {
 module keyvault_pep 'modules/private_endpoint.bicep' = {
   name: 'keyvault-pep-deployment'
   params: {
-    name: 'pep-kv-${workload}-${environment}-${location_abbreviation}'
+    name: 'pep-kv-${suffix}'
     location: location
 
     group_ids: [ 'vault' ]
@@ -278,7 +282,7 @@ module storage 'modules/storage.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'storage-deployment'
   params: {
-    name: aznames.storageAccount.uniName
+    name: naming.storageAccount.nameUnique
     location: location
 
     kind: 'StorageV2'
@@ -318,7 +322,7 @@ module file_private_dns_zone 'modules/private_dns_zone.bicep' = {
 module storage_blob_pep 'modules/private_endpoint.bicep' = {
   name: 'storage-blob-pep-deployment'
   params: {
-    name: 'pep-blob-${workload}-${environment}-${location_abbreviation}'
+    name: 'pep-blob-${suffix}'
     location: location
 
     group_ids: [ 'blob' ]
@@ -331,7 +335,7 @@ module storage_blob_pep 'modules/private_endpoint.bicep' = {
 module storage_file_pep 'modules/private_endpoint.bicep' = {
   name: 'storage-file-pep-deployment'
   params: {
-    name: 'pep-file-${workload}-${environment}-${location_abbreviation}'
+    name: 'pep-file-${suffix}'
     location: location
 
     group_ids: [ 'file' ]
