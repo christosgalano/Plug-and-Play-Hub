@@ -28,6 +28,9 @@ param availability_zones array = [
 /// Variables ///
 
 var suffix = '${workload}-${environment}-${location_abbreviation}'
+var vault_private_dns_zone_name = 'privatelink.vaultcore.azure.net'
+var blob_private_dns_zone_name = 'privatelink.blob.core.windows.net'
+var file_private_dns_zone_name = 'privatelink.file.core.windows.net'
 
 /// Modules ///
 
@@ -250,7 +253,7 @@ module keyvault 'modules/keyvault.bicep' = {
 module vault_private_dns_zone 'modules/private_dns_zone.bicep' = {
   name: 'vault-private-dns-zone-deployment'
   params: {
-    private_dns_zone_name: 'privatelink.vaultcore.azure.net'
+    private_dns_zone_name: vault_private_dns_zone_name
     vnet_ids: [ network.outputs.vnet_id ]
     vnet_names: [ network.outputs.vnet_name ]
   }
@@ -304,7 +307,7 @@ module storage 'modules/storage.bicep' = {
 module blob_private_dns_zone 'modules/private_dns_zone.bicep' = {
   name: 'blob-private-dns-zone-deployment'
   params: {
-    private_dns_zone_name: 'privatelink.blob.core.windows.net'
+    private_dns_zone_name: blob_private_dns_zone_name
     vnet_ids: [ network.outputs.vnet_id ]
     vnet_names: [ network.outputs.vnet_name ]
   }
@@ -313,7 +316,7 @@ module blob_private_dns_zone 'modules/private_dns_zone.bicep' = {
 module file_private_dns_zone 'modules/private_dns_zone.bicep' = {
   name: 'file-private-dns-zone-deployment'
   params: {
-    private_dns_zone_name: 'privatelink.file.core.windows.net'
+    private_dns_zone_name: file_private_dns_zone_name
     vnet_ids: [ network.outputs.vnet_id ]
     vnet_names: [ network.outputs.vnet_name ]
   }
