@@ -64,13 +64,10 @@ module main 'main.bicep' = {
   params: {
     naming: naming.outputs.names
     rg_name: rg.name
-
     location: location
     location_abbreviation: location_abbreviation
-
     workload: workload
     environment: environment
-
     availability_zones: availability_zones
   }
 }
