@@ -1,24 +1,24 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "workload": {
-            "value": "hub"
-        },
-        "environment": {
-            "value": "shared"
-        },
-        "location": {
-            "value": "westeurope"
-        },
-        "location_abbreviation": {
-            "value": "weu"
-        },
-        "rg_tags": {
-            "value": {
-                "owner": "myself",
-                "costCenter": "personal wallet"
-            }
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "westeurope"
+    },
+    "location_abbreviation": {
+      "value": "weu"
+    },
+    "workload": {
+      "value": "hub"
+    },
+    "environment": {
+      "value": "shared"
+    },
+    "rg_tags": {
+      "value": {
+        "owner": "myself",
+        "cost-center": "personal wallet"
+      }
     }
+  }
 }
