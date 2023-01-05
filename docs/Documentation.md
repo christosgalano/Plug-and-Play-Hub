@@ -26,7 +26,7 @@ Finally, a hub-spoke architecture can help you optimize resource allocation in y
 
 Overall, a hub-spoke architecture is a useful design pattern to consider when working with Azure, as it can help to reduce complexity, improve security, and optimize resource allocation. Whether you're building a new cloud solution or migrating an existing one to Azure, a hub-spoke architecture is worth considering as a way to simplify your resource management and get the most out of your Azure environment.
 
-## Plug-and-Play Hub Architecture
+## Plug-and-Play Hub
 
 So let's go over our hub's architecture:
 
@@ -51,8 +51,8 @@ Regarding our network topology; we have one virtual network with six subnets:
 - **AzureBastionSubnet** in which the Bastion Host is located
 - **AzureFirewallSubnet** where the Firewall is located
 - **GatewaySubnet** which contains the VPN Gateway
-- **snet-inbound** for the Private DNS Resolver inbound endpoint
-- **snet-outbound** for the Private DNS Resolver outbound endpoint
+- **snet-inbound** for the Azure DNS Private Resolver inbound endpoint
+- **snet-outbound** for the Azure DNS Private Resolver outbound endpoint
 - **snet-shared** in which reside the private endpoints
 
 ### Notes
@@ -75,6 +75,8 @@ After you have successfully configured your hub, you can safely connect a spoke 
 
 1. Create a virtual network peering between the two networks.
 2. Create a virtual network link between the forwarding ruleset and the spoke network.
+3. Create a route table configured with a route to the Firewall and associate with the desired spoke subnets.
+4. Create rules in the Firewall accordingly.
 
 ## Summary
 
