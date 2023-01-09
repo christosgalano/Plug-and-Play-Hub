@@ -1,3 +1,5 @@
+cd ../../bicep
+
 # The build commands will also lint the bicep file and catch and syntax errors
 az bicep build --file azure.deploy.bicep
 

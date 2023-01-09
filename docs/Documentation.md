@@ -2,7 +2,7 @@
 
 Greetings everybody! I suppose more or less all of us have used, are using, or will use the hub-spoke architecture in our Azure environment. The purpose of this repository is to deploy a hub containing all the standard, necessary resources.
 
-You can find the Infrastructure as Code files in the **bicep** folder along with the deployment script.
+You can find the Infrastructure as Code files in the **bicep** folder and the deployment script in the **.github/scripts** folder.
 
 In the **.github/workflows** folder, you can also find 3 workflows:
 
