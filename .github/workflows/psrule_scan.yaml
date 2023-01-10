@@ -5,6 +5,9 @@ on:
 
 jobs:
   call-psrule-scan-workflow:
+    permissions:
+      checks: write
+      contents: read
     uses: christosgalano/Workflow-Templates/.github/workflows/psrule_scan.yaml@main
     with:
       template_dir: bicep
