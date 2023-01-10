@@ -1,7 +1,5 @@
 name: destroy-infra
-
 run-name: ${{ github.workflow }}
-
 on:
   workflow_dispatch:
     inputs:
@@ -10,47 +8,11 @@ on:
         required: true
         type: string
 
-env:
-  SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  RG_HUB_NAME: ${{ inputs.rg_hub_name }}
-
 jobs:
-  approve:
-    name: Approve infrastructure tear-down
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Manual Workflow Approval
-        uses: trstringer/manual-approval@v1.6.0
-        with:
-          approvers: christosgalano
-          minimum-approvals: 1
-          secret: ${{ github.TOKEN }}
-
-  destroy:
-    name: Destroy Infrastructure
-    needs: approve
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Azure Login
-        uses: Azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Delete the hub resource group and all of its resources
-        uses: Azure/cli@v1
-        with:
-          inlineScript: az group delete -n $RG_HUB_NAME -y
+  call-psrule-scan-workflow:
+    uses: christosgalano/Workflow-Templates/.github/workflows/azure_destroy.yaml@main
+    with:
+      rg_name: ${{ inputs.rg_hub_name }}
+      enable_harder_runner: false
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}

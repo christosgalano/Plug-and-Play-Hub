@@ -1,7 +1,5 @@
-name: deploy-infra
-
+name: destroy-infra
 run-name: ${{ github.workflow }}
-
 on:
   workflow_dispatch:
     inputs:
@@ -10,52 +8,15 @@ on:
         required: true
         type: string
 
-# Requirement OIDC
-permissions:
-  id-token: write
-  contents: read
-
-env:
-  SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  DEPLOYMENT_NAME: ${{ inputs.deployment_name }}
-
 jobs:
-  deploy:
-    name: Deploy infrastructure
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Azure Login
-        uses: Azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Lint template
-        working-directory: ${{ github.workspace }}/bicep
-        run: |
-          az bicep build --file azure.deploy.bicep
-
-      - name: Validate template
-        working-directory: ${{ github.workspace }}/bicep
-        run: |
-          az deployment sub validate \
-            --name "$DEPLOYMENT_NAME" \
-            --location westeurope \
-            --template-file azure.deploy.bicep \
-            --parameters "azure.deploy.parameters.json"
-
-      - name: Deploy template
-        working-directory: ${{ github.workspace }}/bicep
-        run: |
-          az deployment sub create \
-            --name "$DEPLOYMENT_NAME" \
-            --location westeurope \
-            --template-file azure.deploy.bicep \
-            --parameters "azure.deploy.parameters.json"
+  call-psrule-scan-workflow:
+    uses: christosgalano/Workflow-Templates/.github/workflows/azure_deploy.yaml@main
+    with:
+      template_dir: bicep
+      template_prefix: azure.deploy
+      location: westeurope
+      deployment_name: ${{ inputs.deployment_name }}
+      enable_harder_runner: false
+    # secrets: inherit # can use this here also, because the "called" workflow is in the same organization with the "caller" workflow
+    secrets:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
