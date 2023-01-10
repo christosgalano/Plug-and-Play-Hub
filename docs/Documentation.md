@@ -8,7 +8,9 @@ In the **.github/workflows** folder, you can also find 3 workflows:
 
 - **deploy** which is used to deploy the infrastructure
 - **destroy** which is used to destroy the infrastructure
-- **scan-iac** which is used to scan our IaC using PSRule
+- **psrule_scan** which is used to scan our IaC using PSRule
+
+**Note:** these workflows utilize the templates stored in the [Workflow-Templates](https://github.com/christosgalano/Workflow-Templates) repository.
 
 ## General
 
