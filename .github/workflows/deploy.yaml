@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       deployment_name:
-        description: "Define deployment name"
+        description: "Specify deployment name"
         required: true
         type: string
 

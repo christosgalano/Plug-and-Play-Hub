@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       rg_hub_name:
-        description: "Define hub resource group name"
+        description: "Specify hub resource group name"
         required: true
         type: string
 

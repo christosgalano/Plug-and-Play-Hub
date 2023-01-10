@@ -8,7 +8,7 @@ on:
       output_format:
         type: choice
         required: true
-        description: "Define output format"
+        description: "Specify output format"
         options:
           - Sarif
           - NUnit3
