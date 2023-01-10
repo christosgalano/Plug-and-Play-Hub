@@ -9,7 +9,7 @@ on:
         type: string
 
 jobs:
-  call-psrule-scan-workflow:
+  call-azure-deploy-workflow:
     uses: christosgalano/Workflow-Templates/.github/workflows/azure_deploy.yaml@main
     with:
       template_dir: bicep

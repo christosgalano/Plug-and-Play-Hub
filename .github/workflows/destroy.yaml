@@ -9,7 +9,7 @@ on:
         type: string
 
 jobs:
-  call-psrule-scan-workflow:
+  call-azure-destroy-workflow:
     uses: christosgalano/Workflow-Templates/.github/workflows/azure_destroy.yaml@main
     with:
       rg_name: ${{ inputs.rg_hub_name }}
