@@ -39,30 +39,11 @@ resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   tags: tags
 }
 
-// Azure Naming module deployment - this will generate all the names of the resources at deployment time.
-module naming 'modules/naming.bicep' = {
-  scope: resourceGroup(rg.name)
-  name: 'azure-naming-deployment'
-  params: {
-    location: location
-    suffix: [
-      workload
-      environment
-      '**location**' // azure-naming location/region placeholder, it will be replaced with its abbreviation
-    ]
-    uniqueLength: 5
-    uniqueSeed: rg.id
-    useDashes: true
-    useLowerCase: true
-  }
-}
-
 // Main module deployment
 module main 'main.bicep' = {
   scope: resourceGroup(rg.name)
   name: 'workload-deployment'
   params: {
-    naming: naming.outputs.names
     rg_name: rg.name
     location: location
     location_abbreviation: location_abbreviation

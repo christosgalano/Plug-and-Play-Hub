@@ -14,6 +14,7 @@ output:
 input:
   pathIgnore:
     - bicep/modules/
+    - Bicep/main.bicep
     - bicep/bicepconfig.json
 
 configuration:

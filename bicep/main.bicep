@@ -1,8 +1,5 @@
 /// Parameters ///
 
-@description('Object of the Azure Naming module')
-param naming object
-
 @description('name of the resource group where the workload will be deployed')
 param rg_name string
 
@@ -27,7 +24,10 @@ param availability_zones array = [
 
 /// Variables ///
 
-var suffix = '${workload}-${environment}-${location_abbreviation}'
+var suffix = toLower('${workload}-${environment}-${location_abbreviation}')
+var suffix_clean = replace(suffix, '-', '')
+var unique_part = substring(uniqueString(subscription().id), 0, 5)
+
 var vault_private_dns_zone_name = 'privatelink.vaultcore.azure.net'
 var blob_private_dns_zone_name = 'privatelink.blob.core.windows.net'
 var file_private_dns_zone_name = 'privatelink.file.core.windows.net'
@@ -38,7 +38,7 @@ module log_workspace 'modules/log_workspace.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'log-workspace-deployment'
   params: {
-    name: naming.logAnalyticsWorkspace.name
+    name: 'log-${suffix}'
     location: location
     sku: 'PerGB2018'
     retention_days: 30
@@ -50,7 +50,7 @@ module network 'modules/network.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'network-deployment'
   params: {
-    vnet_name: naming.virtualNetwork.name
+    vnet_name: 'vnet-${suffix}'
     vnet_location: location
     vnet_address_space: [ '10.1.0.0/22' ]
 
@@ -98,7 +98,7 @@ module bastion 'modules/bastion.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'bastion-deployment'
   params: {
-    name: naming.bastionHost.name
+    name: 'bas-${suffix}'
     location: location
 
     sku_name: 'Standard'
@@ -133,7 +133,7 @@ module firewall 'modules/firewall.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'firewall-deployment'
   params: {
-    name: naming.firewall.name
+    name: 'afw-${suffix}'
     location: location
 
     sku_tier: 'Premium'
@@ -237,7 +237,7 @@ module keyvault 'modules/keyvault.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'keyvault-deployment'
   params: {
-    name: naming.keyVault.nameUnique
+    name: 'kv-${suffix}-${unique_part}'
     location: location
     sku_name: 'standard'
 
@@ -285,7 +285,7 @@ module storage 'modules/storage.bicep' = {
   scope: resourceGroup(rg_name)
   name: 'storage-deployment'
   params: {
-    name: naming.storageAccount.nameUnique
+    name: 'st${suffix_clean}${unique_part}'
     location: location
 
     kind: 'StorageV2'
