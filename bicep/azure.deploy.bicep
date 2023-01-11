@@ -26,6 +26,8 @@ param availability_zones array = [
 
 /// Variables ///
 
+var rg_name = 'rg-${workload}-${environment}-${location_abbreviation}'
+
 var rg_tags_final = union({
     workload: workload
     environment: environment
@@ -37,7 +39,7 @@ var rg_tags_final = union({
 module rg 'modules/resource_group.bicep' = {
   name: 'rg-${workload}-${environment}-deployment'
   params: {
-    name: 'rg-${workload}-${environment}-${location_abbreviation}'
+    name: rg_name
     location: location
     tags: rg_tags_final
   }
@@ -45,7 +47,7 @@ module rg 'modules/resource_group.bicep' = {
 
 // Main module deployment
 module main 'main.bicep' = {
-  scope: resourceGroup(rg.name)
+  scope: resourceGroup(rg_name)
   name: 'main-${workload}-${environment}-deployment'
   params: {
     location: location
@@ -54,8 +56,11 @@ module main 'main.bicep' = {
     environment: environment
     availability_zones: availability_zones
   }
+  dependsOn: [
+    rg
+  ]
 }
 
 /// Outputs ///
 
-output resource_groups array = [ rg.name ]
+output resource_groups array = [ rg_name ]
