@@ -8,7 +8,7 @@ jobs:
     permissions:
       checks: write
       contents: read
-    uses: christosgalano/Workflow-Templates/.github/workflows/plain/psrule_scan.yaml@main
+    uses: christosgalano/Workflow-Templates/.github/workflows/psrule_scan.yaml@main
     with:
       template_dir: bicep
       template_prefix: azure.deploy

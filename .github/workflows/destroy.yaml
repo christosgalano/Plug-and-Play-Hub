@@ -10,7 +10,7 @@ on:
 
 jobs:
   call-azure-destroy-workflow:
-    uses: christosgalano/Workflow-Templates/.github/workflows/plain/azure_destroy.yaml@main
+    uses: christosgalano/Workflow-Templates/.github/workflows/azure_destroy.yaml@main
     with:
       rg_name: ${{ inputs.rg_hub_name }}
       enable_harder_runner: false
