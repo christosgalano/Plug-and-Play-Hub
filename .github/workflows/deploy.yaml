@@ -10,7 +10,7 @@ on:
 
 jobs:
   call-azure-deploy-workflow:
-    uses: christosgalano/Workflow-Templates/.github/workflows/azure_deploy.yaml@main
+    uses: christosgalano/Workflow-Templates/.github/workflows/plain/azure_deploy.yaml@main
     with:
       template_dir: bicep
       template_prefix: azure.deploy
