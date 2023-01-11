@@ -1,8 +1,5 @@
 /// Parameters ///
 
-@description('name of the resource group where the workload will be deployed')
-param rg_name string
-
 @description('Azure region used for the deployment of all resources')
 param location string
 
@@ -35,7 +32,6 @@ var file_private_dns_zone_name = 'privatelink.file.core.windows.net'
 /// Modules ///
 
 module log_workspace 'modules/log_workspace.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'log-workspace-deployment'
   params: {
     name: 'log-${suffix}'
@@ -47,7 +43,6 @@ module log_workspace 'modules/log_workspace.bicep' = {
 }
 
 module network 'modules/network.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'network-deployment'
   params: {
     vnet_name: 'vnet-${suffix}'
@@ -78,7 +73,6 @@ module network 'modules/network.bicep' = {
 }
 
 module bastion_pip 'modules/public_ip.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'pip-bastion-deployment'
   params: {
     name: 'pip-bas-${suffix}'
@@ -95,7 +89,6 @@ module bastion_pip 'modules/public_ip.bicep' = {
 }
 
 module bastion 'modules/bastion.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'bastion-deployment'
   params: {
     name: 'bas-${suffix}'
@@ -113,7 +106,6 @@ module bastion 'modules/bastion.bicep' = {
 }
 
 module firewall_pip 'modules/public_ip.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'pip-firewall-deployment'
   params: {
     name: 'pip-afw-${suffix}'
@@ -130,7 +122,6 @@ module firewall_pip 'modules/public_ip.bicep' = {
 }
 
 module firewall 'modules/firewall.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'firewall-deployment'
   params: {
     name: 'afw-${suffix}'
@@ -150,7 +141,6 @@ module firewall 'modules/firewall.bicep' = {
 }
 
 module vpn_gateway_pip_1 'modules/public_ip.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'pip-vpn-gateway-deployment-1'
   params: {
     name: 'pip-vpn-${suffix}-01'
@@ -167,7 +157,6 @@ module vpn_gateway_pip_1 'modules/public_ip.bicep' = {
 }
 
 module vpn_gateway_pip_2 'modules/public_ip.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'pip-vpn-gateway-deployment-2'
   params: {
     name: 'pip-vpn-${suffix}-02'
@@ -184,7 +173,6 @@ module vpn_gateway_pip_2 'modules/public_ip.bicep' = {
 }
 
 module vpn_gateway 'modules/vpn_gateway.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'vpn-gateway-deployment'
   params: {
     name: 'vpng-${suffix}'
@@ -211,7 +199,6 @@ module vpn_gateway 'modules/vpn_gateway.bicep' = {
 }
 
 module dns_private_resolver 'modules/dns_private_resolver.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'dns-private-resolver-deployment'
   params: {
     name: 'dpr-${suffix}'
@@ -234,7 +221,6 @@ module dns_private_resolver 'modules/dns_private_resolver.bicep' = {
 }
 
 module keyvault 'modules/keyvault.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'keyvault-deployment'
   params: {
     name: 'kv-${suffix}-${unique_part}'
@@ -282,7 +268,6 @@ module keyvault_pep_private_dns_zone_group 'modules/private_dns_zone_group.bicep
 }
 
 module storage 'modules/storage.bicep' = {
-  scope: resourceGroup(rg_name)
   name: 'storage-deployment'
   params: {
     name: 'st${suffix_clean}${unique_part}'

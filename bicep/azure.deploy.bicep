@@ -26,25 +26,28 @@ param availability_zones array = [
 
 /// Variables ///
 
-var tags = union({
+var rg_tags_final = union({
     workload: workload
     environment: environment
   }, rg_tags)
 
 /// Modules & Resources ///
 
-resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-  name: 'rg-${workload}-${environment}-${location_abbreviation}'
-  location: location
-  tags: tags
+// Resource Group
+module rg 'modules/resource_group.bicep' = {
+  name: 'rg-${workload}-deployment'
+  params: {
+    name: 'rg-${workload}-${environment}-${location_abbreviation}'
+    location: location
+    tags: rg_tags_final
+  }
 }
 
 // Main module deployment
 module main 'main.bicep' = {
   scope: resourceGroup(rg.name)
-  name: 'workload-deployment'
+  name: 'main-${workload}-deployment'
   params: {
-    rg_name: rg.name
     location: location
     location_abbreviation: location_abbreviation
     workload: workload
@@ -52,3 +55,7 @@ module main 'main.bicep' = {
     availability_zones: availability_zones
   }
 }
+
+/// Outputs ///
+
+output resource_groups array = [ rg.name ]
