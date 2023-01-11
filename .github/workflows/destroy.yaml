@@ -5,6 +5,7 @@ on:
     inputs:
       deployment_name:
         description: "Specify deployment name"
+        default: hub-shared-deployment
         required: true
         type: string
 
