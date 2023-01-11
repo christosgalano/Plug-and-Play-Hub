@@ -10,7 +10,7 @@ on:
 
 jobs:
   approve:
-    name: Approve infrastructure teardown
+    name: Approve infrastructure tear-down
     permissions:
       issues: write
     runs-on: ubuntu-latest
@@ -26,6 +26,7 @@ jobs:
 
   call-azure-destroy-workflow:
     uses: christosgalano/Workflow-Templates/.github/workflows/azure_destroy.yaml@main
+    needs: approve
     with:
       rg_name: ${{ inputs.rg_hub_name }}
       enable_harder_runner: false
