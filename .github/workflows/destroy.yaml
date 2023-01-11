@@ -27,7 +27,7 @@ jobs:
 
   call-azure-destroy-workflow:
     uses: christosgalano/Workflow-Templates/.github/workflows/azure_destroy.yaml@main
-    needs: approve
+    # needs: approve
     with:
       deployment_name: ${{ inputs.deployment_name }}
       enable_harder_runner: false
