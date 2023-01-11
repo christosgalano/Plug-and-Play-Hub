@@ -10,20 +10,20 @@ on:
         type: string
 
 jobs:
-  approve:
-    name: Approve infrastructure tear-down
-    permissions:
-      issues: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Manual Workflow Approval
-        uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: christosgalano
-          minimum-approvals: 1
-          issue-title: "Destroying infrastructure"
-          exclude-workflow-initiator-as-approver: false
+  # approve:
+  #   name: Approve infrastructure tear-down
+  #   permissions:
+  #     issues: write
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Manual Workflow Approval
+  #       uses: trstringer/manual-approval@v1
+  #       with:
+  #         secret: ${{ github.TOKEN }}
+  #         approvers: christosgalano
+  #         minimum-approvals: 1
+  #         issue-title: "Destroying infrastructure"
+  #         exclude-workflow-initiator-as-approver: false
 
   call-azure-destroy-workflow:
     uses: christosgalano/Workflow-Templates/.github/workflows/azure_destroy.yaml@main
