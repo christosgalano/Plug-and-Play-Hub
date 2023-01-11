@@ -35,7 +35,7 @@ var rg_tags_final = union({
 
 // Resource Group
 module rg 'modules/resource_group.bicep' = {
-  name: 'rg-${workload}-deployment'
+  name: 'rg-${workload}-${environment}-deployment'
   params: {
     name: 'rg-${workload}-${environment}-${location_abbreviation}'
     location: location
@@ -46,7 +46,7 @@ module rg 'modules/resource_group.bicep' = {
 // Main module deployment
 module main 'main.bicep' = {
   scope: resourceGroup(rg.name)
-  name: 'main-${workload}-deployment'
+  name: 'main-${workload}-${environment}-deployment'
   params: {
     location: location
     location_abbreviation: location_abbreviation
