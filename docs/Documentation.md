@@ -10,8 +10,6 @@ In the **.github/workflows** folder, you can also find 3 workflows:
 - **destroy** which is used to destroy the infrastructure
 - **psrule_scan** which is used to scan our IaC using PSRule
 
-**Note:** these are ***caller*** workflows, meaning that they use other workflows, specifically those stored in the [Workflow-Templates](https://github.com/christosgalano/Workflow-Templates) repository. For more see [Reusing workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows).
-
 ## General
 
 ### Hub-Spoke architecture
