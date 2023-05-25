@@ -8,14 +8,53 @@ on:
         default: hub-shared-deployment
         required: true
         type: string
+      location:
+        description: "Specify deployment location"
+        default: westeurope
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  BICEP_DIR: bicep
 
 jobs:
-  call-azure-deploy-workflow:
-    uses: christosgalano/github-workflows-library/.github/workflows/azure_deploy.yaml@main
-    with:
-      template_dir: bicep
-      template_prefix: azure.deploy
-      location: westeurope
-      deployment_name: ${{ inputs.deployment_name }}
-    secrets:
-      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.BICEP_DIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Azure login
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Lint template
+        run: az bicep build --file azure.deploy.bicep
+
+      - name: Validate template
+        run: |
+          az deployment sub validate \
+          --name "${{ inputs.deployment_name }}" \
+          --location "${{ inputs.location }}" \
+          --template-file azure.deploy.bicep \
+          --parameters azure.deploy.parameters.json
+            
+      - name: Deploy template
+        run: |
+          az deployment sub create \
+          --name "${{ inputs.deployment_name }}" \
+          --location "${{ inputs.location }}"  \
+          --template-file azure.deploy.bicep \
+          --parameters azure.deploy.parameters.json

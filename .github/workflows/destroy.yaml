@@ -9,25 +9,36 @@ on:
         required: true
         type: string
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+        
 jobs:
   approve:
-    name: Approve infrastructure tear-down
+    name: approve-infra-teardown
+    runs-on: ubuntu-latest
     permissions:
       issues: write
-    runs-on: ubuntu-latest
     steps:
-      - name: Manual Workflow Approval
-        uses: trstringer/manual-approval@v1
+      - name: Manual approval
+        uses: trstringer/manual-approval@v1.9.0
         with:
-          secret: ${{ secrets.GITHUB_TOKEN }}
           approvers: christosgalano
           minimum-approvals: 1
-          issue-title: "Destroying infrastructure"
-
-  call-azure-destroy-workflow:
-    uses: christosgalano/github-workflows-library/.github/workflows/azure_destroy.yaml@main
+          issue-title: "Approve teardown of infrastructure regarding deployment ${{ inputs.deployment_name }}"
+          secret: ${{ secrets.GITHUB_TOKEN }}
+  destroy:
+    name: destroy-infra
     needs: approve
-    with:
-      deployment_name: ${{ inputs.deployment_name }}
-    secrets:
-      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure login
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Delete resource groups
+        shell: pwsh
+        run: |
+          $resource_groups = az deployment sub show -n ${{ inputs.deployment_name }} --query properties.outputs.resource_groups.value | convertfrom-json
+          $resource_groups | foreach -parallel { Write-Host "Deleting resource group $_ ..."; az group delete -n $_ -y }

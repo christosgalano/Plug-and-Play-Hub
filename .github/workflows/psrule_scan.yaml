@@ -3,14 +3,44 @@ run-name: ${{ github.workflow }}
 on:
   workflow_dispatch:
 
+env:
+  BICEP_DIR: bicep
+
 jobs:
-  call-psrule-scan-workflow:
+  psrule-scan:
+    name: psrule-scan
+    runs-on: ubuntu-latest
     permissions:
       issues: read
       checks: write
       contents: read
       pull-requests: write
-    uses: christosgalano/github-workflows-library/.github/workflows/psrule_scan.yaml@main
-    with:
-      template_dir: bicep
-      template_prefix: azure.deploy
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Bicep build
+        run: az bicep build --file ${{ env.BICEP_DIR }}/azure.deploy.bicep --outfile ${{ env.BICEP_DIR }}/azure.deploy.json
+
+      - name: Run PSRule
+        uses: microsoft/ps-rule@v2.8.1
+        with:
+          modules: "PSRule.Rules.Azure"
+          inputPath: ${{ env.BICEP_DIR }}/azure.deploy*.json
+          outputFormat: NUnit3
+          outputPath: psrule-results-${{ github.run_number }}.xml
+          summary: true
+
+      - name: Publish scan results
+        uses: EnricoMi/publish-unit-test-result-action@v2.7.0
+        if: always()
+        with:
+          check_name: PSRule Scan Results
+          nunit_files: psrule-results-${{ github.run_number }}.xml
+          comment_mode: always
+          fail_on: test failures
+          action_fail: false
+          ignore_runs: false
+          job_summary: false
+          compare_to_earlier_commit: true
+          check_run_annotations: all tests, skipped tests
